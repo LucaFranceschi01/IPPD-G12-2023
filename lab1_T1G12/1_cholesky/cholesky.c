@@ -19,16 +19,16 @@ void cholesky_openmp(int n) {
      * 1. Matrix initialization for A, L, U and B
      */
     start = omp_get_wtime();
-    A = (double **)malloc(n * sizeof(double *)); 
-    L = (double **)malloc(n * sizeof(double *)); 
-    U = (double **)malloc(n * sizeof(double *)); 
-    B = (double **)malloc(n * sizeof(double *)); 
+    A = (double **)malloc(n * sizeof(double *));
+    L = (double **)malloc(n * sizeof(double *));
+    U = (double **)malloc(n * sizeof(double *));
+    B = (double **)malloc(n * sizeof(double *));
     
     for(i=0; i<n; i++) {
-         A[i] = (double *)malloc(n * sizeof(double)); 
-         L[i] = (double *)malloc(n * sizeof(double)); 
-         U[i] = (double *)malloc(n * sizeof(double)); 
-         B[i] = (double *)malloc(n * sizeof(double)); 
+         A[i] = (double *)malloc(n * sizeof(double));
+         L[i] = (double *)malloc(n * sizeof(double));
+         U[i] = (double *)malloc(n * sizeof(double));
+         B[i] = (double *)malloc(n * sizeof(double));
     }
     
     srand(time(NULL));
@@ -53,7 +53,7 @@ void cholesky_openmp(int n) {
      * 2. Compute Cholesky factorization for U
      */
     start = omp_get_wtime();
-	#pragma omp parallel for private(i, j, tmp)
+	#pragma omp parallel for private(i, j, tmp) schedule(static)
     for(i=0; i<n; i++) {
         // Calculate diagonal elements
         tmp = 0.0;
@@ -62,6 +62,7 @@ void cholesky_openmp(int n) {
         }
         U[i][i] = sqrt(A[i][i]-tmp);
         // Calculate non-diagonal elements
+		// #pragma omp parallel for private(j, k, tmp) shared(A, U, i) schedule(static) // not as fast as upper one
         for(j=i+1;j<n;j++) {
 			tmp = 0.0;
 			for(k=0; k<i; k++) {
@@ -87,7 +88,7 @@ void cholesky_openmp(int n) {
 					L[l][k] = U[k][l];
 				}
 			}
-		}	
+		}
 	}
     end = omp_get_wtime();
     printf("L=U': %f\n", end-start);
@@ -99,8 +100,7 @@ void cholesky_openmp(int n) {
     // TODO B=LU
 	#pragma omp parallel for 
     for(i=0; i<n; i++) {
-    	for(k=0; k<n; k++) { // swapped two inner loops (works)
-			B[i][j] = 0.0;
+    	for(k=0; k<n; k++) { // swapped two inner loops (less cache misses)
 			for(j=0; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}

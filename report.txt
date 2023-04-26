@@ -1,0 +1,25 @@
+1_Cholesky:
+	1. Expose your parallelization strategy to divide the work in the Cholesky algorithm and in the matrix multiplication. Justify the selection of the scheduler and chunk size and compare different schedulers with different chunk sizes and show the results.
+
+		In the cholesky algorithm what we did is parallelize the whole outer for loop, and since there are some variables that are individual to each thread, we declared them inside the private() statement. We also chose the static scheduling since it's the one that gave us best results. We tried with different chunk sizes but the best result is with the default.
+
+		The code that gave us the best improvements to parallelize that part of the algorithm is:
+
+		#pragma omp parallel for private(i, j, tmp) schedule(static) (ln: 56)
+
+		However, we tried before to parallelize only the inner loop with the following code:
+
+		#pragma omp parallel for private(j, k, tmp) shared(A, U, i) schedule(static) (ln: 65)
+
+		Which also worked, but there was not that much improvement.
+
+		For the matrix multiplication part, we parallelized it with a straight-forward:
+
+		#pragma omp parallel for (ln: 101)
+
+		We were able to do this because we swapped the two inner loops, minimizing cache misses. If we did not approach the problem this way, we might have had to use reductions and it would have been more difficult.
+
+	2. Make two plots: one for the speedup of the Cholesky factorization and another for the matrix multiplication
+for n=3000. Use 1, 2, 4, 8, and 16 cores for a strong scaling test. Plot the ideal speedup in the figures and
+use a logarithmic scale to print the results. Discuss the results.
+
