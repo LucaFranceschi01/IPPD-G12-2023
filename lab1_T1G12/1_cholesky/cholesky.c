@@ -53,7 +53,7 @@ void cholesky_openmp(int n) {
      * 2. Compute Cholesky factorization for U
      */
     start = omp_get_wtime();
-	// #pragma omp parallel for private(i, j, tmp)
+	#pragma omp parallel for private(i, j, tmp)
     for(i=0; i<n; i++) {
         // Calculate diagonal elements
         tmp = 0.0;
@@ -66,25 +66,24 @@ void cholesky_openmp(int n) {
 			tmp = 0.0;
 			for(k=0; k<i; k++) {
 				tmp += U[k][j]*U[k][i];	
-			}	
+			}
         	U[i][j] = (A[j][i] - tmp) / U[i][i];
         }
     }
     end = omp_get_wtime();
     printf("Cholesky: %f\n", end-start);
-        
+
     /**
      * 3. Calculate L from U'
      */
     start = omp_get_wtime();
     // TODO L=U'
-	int strip_size = 8; // L1 cache size is 64 bytes, 8 doubles
-	// #pragma omp parallel for
+	int strip_size = 8; // L1 cache size is 64 bytes (lscpu 32+32), 8 doubles
+	#pragma omp parallel for collapse(2) private(i, j)
 	for(i=0; i<n; i+=strip_size) {
-		// #pragma omp parallel for
 		for(j=0; j<n; j+=strip_size) {
-			for(k=i; k< i+strip_size && k<n; k++) {
-				for(int l=j; l < j+strip_size && l<n; l++) {
+			for(k=i; k<(i+strip_size) && k<n; k++) {
+				for(int l=j; l<(j+strip_size) && l<n; l++) {
 					L[l][k] = U[k][l];
 				}
 			}
@@ -98,9 +97,9 @@ void cholesky_openmp(int n) {
      */
     start = omp_get_wtime();
     // TODO B=LU
-	#pragma omp parallel for
+	#pragma omp parallel for 
     for(i=0; i<n; i++) {
-    	for(k=0; k<n; k++) {
+    	for(k=0; k<n; k++) { // swapped two inner loops (works)
 			B[i][j] = 0.0;
 			for(j=0; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
@@ -116,11 +115,15 @@ void cholesky_openmp(int n) {
     start = omp_get_wtime();
     cnt=0;
     // TODO check if matrices are equal
+	#pragma omp parallel for collapse(2)
 	for(i=0; i<n; i++) {
 		for(j=0; j<n; j++) {
-			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) cnt++;
+			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) {
+				#pragma omp atomic
+				cnt++;
+			}
 		}
-	}	
+	}
     if(cnt != 0) {
         printf("Matrices are not equal\n");
     } else {
