@@ -23,3 +23,16 @@
 for n=3000. Use 1, 2, 4, 8, and 16 cores for a strong scaling test. Plot the ideal speedup in the figures and
 use a logarithmic scale to print the results. Discuss the results.
 
+
+2_Sudoku:
+
+	1. Briefly explain how the code works.
+	2. Explain how the parallelized code distributes the workload among threads.
+	3. Add the clause 'final(level) > 1' to your task-generating pragma. What does it do?
+
+
+3_Histogram:
+
+	1. Explain how have you solved each of the parallelizations.
+	2. Explain the time differences between different parallel methods if there are any.
+	3. Make a speedup plot for the different parallelization methods for 1, 2, 4, 8, and 16 cores. Discuss the results.

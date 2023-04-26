@@ -63,23 +63,51 @@ int main (){
     std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-    printf(" histogram for %d buckets of %d values\n",num_buckets, num_trials);
-    printf(" ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
-    printf(" in %f seconds\n",(float)time);
-
-
-
-
+    printf("Sequential histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
+    printf("in %f seconds\n",(float)time);
 
     ////////////////////////////////////////////////////////////////
     // Assign x values to the right histogram bucket -- critical
     ////////////////////////////////////////////////////////////////
 
+	// initialize the histogram -> this can be turned into a function
+    for(int i=0;i<num_buckets;i++)
+        hist[i] = 0;
+
+    // Assign x values to the right historgram bucket
+    time = omp_get_wtime();
+	long ival;
+	#pragma omp parallel for private(ival)
+    for(int i=0;i<num_trials;i++){
+
+        ival = (long) (x[i] - xlow)/bucket_width;
+		#pragma omp critical
+        hist[ival]++;
+
+        #ifdef DEBUG
+        printf("i = %d,  xi = %f, ival = %d\n",i,(float)x[i], ival);
+        #endif
+
+    }
+
+    time = omp_get_wtime() - time;
+
+    // compute statistics ... ave, std-dev for whole histogram and quartiles
+    // -> this can be turned into a function
+    sumh=0.0, sumhsq=0.0;
+    for(int i=0;i<num_buckets;i++){
+        sumh   += (double) hist[i];
+        sumhsq += (double) hist[i]*hist[i];
+    }
+
+    ave     = sumh/num_buckets;
+    std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-
-
-
+    printf("Par with critical histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
+    printf("in %f seconds\n",(float)time);
 
     ////////////////////////////////////////////////////////////////
     // Assign x values to the right histogram bucket -- locks
