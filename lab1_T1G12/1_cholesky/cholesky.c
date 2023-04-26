@@ -5,10 +5,7 @@
 #include <time.h>
 #include "cholesky.h"
 
-
-
 void cholesky_openmp(int n) {
-    // TODO
 	int i, j, k;
     double** A;
     double** L;
@@ -52,12 +49,11 @@ void cholesky_openmp(int n) {
     end = omp_get_wtime();
     printf("Initialization: %f\n", end-start);
     
-    
     /**
      * 2. Compute Cholesky factorization for U
      */
     start = omp_get_wtime();
-	#pragma omp parallel for private(i, j, tmp)
+	// #pragma omp parallel for private(i, j, tmp)
     for(i=0; i<n; i++) {
         // Calculate diagonal elements
         tmp = 0.0;
@@ -76,7 +72,6 @@ void cholesky_openmp(int n) {
     }
     end = omp_get_wtime();
     printf("Cholesky: %f\n", end-start);
-    
         
     /**
      * 3. Calculate L from U'
@@ -84,9 +79,9 @@ void cholesky_openmp(int n) {
     start = omp_get_wtime();
     // TODO L=U'
 	int strip_size = 8; // L1 cache size is 64 bytes, 8 doubles
-	#pragma omp parallel for
+	// #pragma omp parallel for
 	for(i=0; i<n; i+=strip_size) {
-		#pragma omp parallel for
+		// #pragma omp parallel for
 		for(j=0; j<n; j+=strip_size) {
 			for(k=i; k< i+strip_size && k<n; k++) {
 				for(int l=j; l < j+strip_size && l<n; l++) {
@@ -98,25 +93,22 @@ void cholesky_openmp(int n) {
     end = omp_get_wtime();
     printf("L=U': %f\n", end-start);
     
-    
     /**
      * 4. Compute B=LU
      */
     start = omp_get_wtime();
     // TODO B=LU
-	// #pragma omp parallel private(i, j)
+	#pragma omp parallel for
     for(i=0; i<n; i++) {
-    	for(j=0; j<n; j++) {
+    	for(k=0; k<n; k++) {
 			B[i][j] = 0.0;
-			// #pragma omp for
-			for(k=0; k<n; k++) {
+			for(j=0; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
     }
     end = omp_get_wtime();
     printf("B=LU: %f\n", end-start);
-
 
     /**
      * 5. Check if all elements of A and B have a difference smaller than 0.001%
@@ -137,7 +129,6 @@ void cholesky_openmp(int n) {
     end = omp_get_wtime();
     printf("A==B?: %f\n", end-start);
 }
-
 
 void cholesky(int n) {
     int i, j, k;
@@ -183,7 +174,6 @@ void cholesky(int n) {
     end = omp_get_wtime();
     printf("Initialization: %f\n", end-start);
     
-    
     /**
      * 2. Compute Cholesky factorization for U
      */
@@ -206,7 +196,6 @@ void cholesky(int n) {
     }
     end = omp_get_wtime();
     printf("Cholesky: %f\n", end-start);
-    
         
     /**
      * 3. Calculate L from U'
@@ -226,7 +215,6 @@ void cholesky(int n) {
     end = omp_get_wtime();
     printf("L=U': %f\n", end-start);
     
-    
     /**
      * 4. Compute B=LU
      */
@@ -242,7 +230,6 @@ void cholesky(int n) {
     }
     end = omp_get_wtime();
     printf("B=LU: %f\n", end-start);
-
 
     /**
      * 5. Check if all elements of A and B have a difference smaller than 0.001%
@@ -263,5 +250,3 @@ void cholesky(int n) {
     end = omp_get_wtime();
     printf("A==B?: %f\n", end-start);
 }
-
-
