@@ -6,249 +6,319 @@
 #include "cholesky.h"
 
 void cholesky_openmp(int n) {
-	int i, j, k;
-    double** A;
-    double** L;
-    double** U;
-    double** B;
-    double tmp;
-    double start, end;
-    int cnt;
-    
-    /**
-     * 1. Matrix initialization for A, L, U and B
-     */
-    start = omp_get_wtime();
-    A = (double **)malloc(n * sizeof(double *));
-    L = (double **)malloc(n * sizeof(double *));
-    U = (double **)malloc(n * sizeof(double *));
-    B = (double **)malloc(n * sizeof(double *));
-    
-    for(i=0; i<n; i++) {
-         A[i] = (double *)malloc(n * sizeof(double));
-         L[i] = (double *)malloc(n * sizeof(double));
-         U[i] = (double *)malloc(n * sizeof(double));
-         B[i] = (double *)malloc(n * sizeof(double));
-    }
-    
-    srand(time(NULL));
-    for(i=0; i < n; i++) {
-        A[i][i] = rand()%1000+100.0;
-        for(j=i+1; j < n; j++) {
-            A[i][j] = rand()%100 + 1.0;
-            A[j][i] = A[i][j];
-        }
-    }
-
-    for(i=0; i < n; i++) {
-        for(j=0; j < n; j++) {
-            L[i][j] = 0.0;
-            U[i][j] = 0.0;
-        }
-    }
-    end = omp_get_wtime();
-    printf("Initialization: %f\n", end-start);
-    
-    /**
-     * 2. Compute Cholesky factorization for U
-     */
-    start = omp_get_wtime();
-	#pragma omp parallel for private(i, j, tmp) schedule(static)
-    for(i=0; i<n; i++) {
-        // Calculate diagonal elements
-        tmp = 0.0;
-        for(k=0;k<i;k++) {
-            tmp += U[k][i]*U[k][i];
-        }
-        U[i][i] = sqrt(A[i][i]-tmp);
-        // Calculate non-diagonal elements
-		// #pragma omp parallel for private(j, k, tmp) shared(A, U, i) schedule(static) // not as fast as upper one
-        for(j=i+1;j<n;j++) {
-			tmp = 0.0;
-			for(k=0; k<i; k++) {
-				tmp += U[k][j]*U[k][i];	
-			}
-        	U[i][j] = (A[j][i] - tmp) / U[i][i];
-        }
-    }
-    end = omp_get_wtime();
-    printf("Cholesky: %f\n", end-start);
-
-    /**
-     * 3. Calculate L from U'
-     */
-    start = omp_get_wtime();
-    // TODO L=U'
-	int strip_size = 8; // L1 cache size is 64 bytes (lscpu 32+32), 8 doubles
-	#pragma omp parallel for collapse(2) private(i, j)
-	for(i=0; i<n; i+=strip_size) {
-		for(j=0; j<n; j+=strip_size) {
-			for(k=i; k<(i+strip_size) && k<n; k++) {
-				for(int l=j; l<(j+strip_size) && l<n; l++) {
-					L[l][k] = U[k][l];
-				}
-			}
-		}
-	}
-    end = omp_get_wtime();
-    printf("L=U': %f\n", end-start);
-    
-    /**
-     * 4. Compute B=LU
-     */
-    start = omp_get_wtime();
-    // TODO B=LU
-	#pragma omp parallel for
-    for(i=0; i<n; i++) {
-    	for(k=0; k<n; k++) { // swapped two inner loops (less cache misses)
-			for(j=0; j<n; j++) {
-				B[i][j] += L[i][k] * U[k][j];
-			}
-		}
-    }
-    end = omp_get_wtime();
-    printf("B=LU: %f\n", end-start);
-
-    /**
-     * 5. Check if all elements of A and B have a difference smaller than 0.001%
-     */
-    start = omp_get_wtime();
-    cnt=0;
-    // TODO check if matrices are equal
-	#pragma omp parallel for collapse(2) reduction(+:cnt)
+	int i, j, k, l;
+	double** A;
+	double** L;
+	double** U;
+	double** B;
+	double tmp;
+	double start, end;
+	int cnt;
+	
+	/**
+	 * 1. Matrix initialization for A, L, U and B
+	 */
+	start = omp_get_wtime();
+	A = (double **)malloc(n * sizeof(double *)); 
+	L = (double **)malloc(n * sizeof(double *)); 
+	U = (double **)malloc(n * sizeof(double *)); 
+	B = (double **)malloc(n * sizeof(double *)); 
+	
 	for(i=0; i<n; i++) {
-		for(j=0; j<n; j++) {
-			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) {
-				cnt++;
+		 A[i] = (double *)malloc(n * sizeof(double)); 
+		 L[i] = (double *)malloc(n * sizeof(double)); 
+		 U[i] = (double *)malloc(n * sizeof(double)); 
+		 B[i] = (double *)malloc(n * sizeof(double)); 
+	}
+	
+	srand(time(NULL));
+	// Generate random values for the matrix
+	for(i=0; i<n; i++) {
+		for (j=0; j<n; j++) {
+			A[i][j] = ((double)rand() / RAND_MAX)*2.0 - 1.0;  // Generate values between -1 and 1
+		}
+	}
+
+	// Make the matrix positive definite
+	for(i=0; i<n; i++) {
+		for (j=i; j<n; j++) {
+			if (i==j) {
+				A[i][j] += n;
+			} else {
+				A[i][j] += ((double)rand() / RAND_MAX)*sqrt(n);
+				A[j][i] = A[i][j];
 			}
 		}
 	}
-    if(cnt != 0) {
-        printf("Matrices are not equal\n");
-    } else {
-        printf("Matrices are equal\n");
-    }
-    end = omp_get_wtime();
-    printf("A==B?: %f\n", end-start);
-}
 
-void cholesky(int n) {
-    int i, j, k;
-    double** A;
-    double** L;
-    double** U;
-    double** B;
-    double tmp;
-    double start, end;
-    int cnt;
-    
-    /**
-     * 1. Matrix initialization for A, L, U and B
-     */
-    start = omp_get_wtime();
-    A = (double **)malloc(n * sizeof(double *)); 
-    L = (double **)malloc(n * sizeof(double *)); 
-    U = (double **)malloc(n * sizeof(double *)); 
-    B = (double **)malloc(n * sizeof(double *)); 
-    
-    for(i=0; i<n; i++) {
-         A[i] = (double *)malloc(n * sizeof(double)); 
-         L[i] = (double *)malloc(n * sizeof(double)); 
-         U[i] = (double *)malloc(n * sizeof(double)); 
-         B[i] = (double *)malloc(n * sizeof(double)); 
-    }
-    
-    srand(time(NULL));
-    for(i=0; i < n; i++) {
-        A[i][i] = rand()%1000+100.0;
-        for(j=i+1; j < n; j++) {
-            A[i][j] = rand()%100 + 1.0;
-            A[j][i] = A[i][j];
-        }
-    }
-
-    for(i=0; i < n; i++) {
-        for(j=0; j < n; j++) {
-            L[i][j] = 0.0;
-            U[i][j] = 0.0;
-        }
-    }
-    end = omp_get_wtime();
-    printf("Initialization: %f\n", end-start);
-    
-    /**
-     * 2. Compute Cholesky factorization for U
-     */
-    start = omp_get_wtime();
-    for(i=0; i<n; i++) {
-        // Calculate diagonal elements
-        tmp = 0.0;
-        for(k=0;k<i;k++) {
-            tmp += U[k][i]*U[k][i];
-        }
-        U[i][i] = sqrt(A[i][i]-tmp);
-        // Calculate non-diagonal elements
-        for(j=i+1;j<n;j++) {
+	for(i=0; i < n; i++) {
+		for(j=0; j < n; j++) {
+			L[i][j] = 0.0;
+			U[i][j] = 0.0;
+		}
+	}
+	end = omp_get_wtime();
+	printf("Initialization: %f\n", end-start);
+	
+	/**
+	 * 2. Compute Cholesky factorization for U
+	 */
+	start = omp_get_wtime();
+	for(i=0; i<n; i++) {
+		// Calculate diagonal elements
+		tmp = 0.0;
+		#pragma omp parallel for schedule(dynamic) reduction(+:tmp)
+		for(k=0;k<i;k++) {
+			tmp += U[k][i]*U[k][i];
+		}
+		U[i][i] = sqrt(A[i][i]-tmp);
+		// Calculate non-diagonal elements
+		#pragma omp parallel for schedule(dynamic)
+		for(j=i+1;j<n;j++) {
 			tmp = 0.0;
 			for(k=0; k<i; k++) {
 				tmp += U[k][j]*U[k][i];	
-			}	
-        	U[i][j] = (A[j][i] - tmp) / U[i][i];
-        }
-    }
-    end = omp_get_wtime();
-    printf("Cholesky: %f\n", end-start);
-        
-    /**
-     * 3. Calculate L from U'
-     */
-    start = omp_get_wtime();
-    // TODO L=U'
-	int strip_size = 8; // L1 cache size is 64 bytes, 8 doubles
-	for(i=0; i<n; i+=strip_size) {
-		for(j=0; j<n; j+=strip_size) {
-			for(k=i; k< i+strip_size && k<n; k++) {
-				for(int l=j; l < j+strip_size && l<n; l++) {
+			}
+			tmp = (A[j][i] - tmp) / U[i][i];
+			U[i][j] = tmp;
+		}
+	}
+	end = omp_get_wtime();
+	printf("Cholesky: %f\n", end-start);
+		
+	/**
+	 * 3. Calculate L from U'
+	 */
+	start = omp_get_wtime();
+	// TODO L=U'
+	#pragma omp parallel for collapse(2) private(i, j, k, l) shared(L, U)
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=i; k< i+STRIPSIZE && k<n; k++) {
+				for(l=j; l < j+STRIPSIZE && l<n; l++) {
 					L[l][k] = U[k][l];
 				}	
 			}
 		}	
 	}
-    end = omp_get_wtime();
-    printf("L=U': %f\n", end-start);
-    
-    /**
-     * 4. Compute B=LU
-     */
-    start = omp_get_wtime();
-    // TODO B=LU
-    for(i=0; i<n; i++) {
-    	for(j=0; j<n; j++) {
-			B[i][j] = 0.0;
-			for(k=0; k<n; k++) {
+	end = omp_get_wtime();
+	printf("L=U': %f\n", end-start);
+	
+	/**
+	 * 4. Compute B=LU
+	 */
+	start = omp_get_wtime();
+	// TODO B=LU
+	#pragma omp parallel for private(i, j, k) shared(B, L, U)
+	for(i=0; i<n; i++) {
+		for(k=0; k<n; k++) {
+			for(j=0; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
-    }
-    end = omp_get_wtime();
-    printf("B=LU: %f\n", end-start);
+	}
+	/*
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=0; k<n; k+=STRIPSIZE) {
+				for(ii=i; ii<i+STRIPSIZE && ii<n; ii++) {
+					for(jj=j; jj<j+STRIPSIZE && jj<n; jj++) {
+						for(kk=k; kk<k+STRIPSIZE && kk<n; kk++) {
+							B[ii][jj] += L[ii][kk] * U[kk][jj];
+						}
+					}
+				}
+			}
+		}
+	}
+	*/
+	end = omp_get_wtime();
+	printf("B=LU: %f\n", end-start);
 
-    /**
-     * 5. Check if all elements of A and B have a difference smaller than 0.001%
-     */
-    start = omp_get_wtime();
-    cnt=0;
-    // TODO check if matrices are equal
+	/**
+	 * 5. Check if all elements of A and B have a difference smaller than 0.001%
+	 */
+	start = omp_get_wtime();
+	cnt=0;
+	// TODO check if matrices are equal
+	#pragma omp parallel for collapse(2) private(i, j) shared(B, A) reduction(+:cnt)
 	for(i=0; i<n; i++) {
 		for(j=0; j<n; j++) {
 			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) cnt++;
 		}
-	}	
-    if(cnt != 0) {
-        printf("Matrices are not equal\n");
-    } else {
-        printf("Matrices are equal\n");
-    }
-    end = omp_get_wtime();
-    printf("A==B?: %f\n", end-start);
+	}
+	/*
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=i; k<i+STRIPSIZE && k<n; k++) {
+				for(l=j; l<k+STRIPSIZE && l<n; l++) {
+					if (abs(B[k][l] - A[k][l]) / A[k][l] > 0.001) cnt++;
+				}	
+			}
+		}
+	}
+	*/
+	if(cnt != 0) {
+		printf("Matrices are not equal\n");
+	} else {
+		printf("Matrices are equal\n");
+	}
+	end = omp_get_wtime();
+	printf("A==B?: %f\n", end-start);
+}
+
+void cholesky(int n) {
+	int i, j, k, l;
+	double** A;
+	double** L;
+	double** U;
+	double** B;
+	double tmp;
+	double start, end;
+	int cnt;
+	
+	/**
+	 * 1. Matrix initialization for A, L, U and B
+	 */
+	start = omp_get_wtime();
+	A = (double **)malloc(n * sizeof(double *)); 
+	L = (double **)malloc(n * sizeof(double *)); 
+	U = (double **)malloc(n * sizeof(double *)); 
+	B = (double **)malloc(n * sizeof(double *)); 
+	
+	for(i=0; i<n; i++) {
+		 A[i] = (double *)malloc(n * sizeof(double)); 
+		 L[i] = (double *)malloc(n * sizeof(double)); 
+		 U[i] = (double *)malloc(n * sizeof(double)); 
+		 B[i] = (double *)malloc(n * sizeof(double)); 
+	}
+	
+	srand(time(NULL));
+	// Generate random values for the matrix
+	for(i=0; i<n; i++) {
+		for (j=0; j<n; j++) {
+			A[i][j] = ((double)rand() / RAND_MAX)*2.0 - 1.0;  // Generate values between -1 and 1
+		}
+	}
+
+	// Make the matrix positive definite
+	for(i=0; i<n; i++) {
+		for (j=i; j<n; j++) {
+			if (i==j) {
+				A[i][j] += n;
+			} else {
+				A[i][j] += ((double)rand() / RAND_MAX)*sqrt(n);
+				A[j][i] = A[i][j];
+			}
+		}
+	}
+
+	for(i=0; i < n; i++) {
+		for(j=0; j < n; j++) {
+			L[i][j] = 0.0;
+			U[i][j] = 0.0;
+		}
+	}
+	end = omp_get_wtime();
+	printf("Initialization: %f\n", end-start);
+	
+	/**
+	 * 2. Compute Cholesky factorization for U
+	 */
+	start = omp_get_wtime();
+	for(i=0; i<n; i++) {
+		// Calculate diagonal elements
+		tmp = 0.0;
+		for(k=0;k<i;k++) {
+			tmp += U[k][i]*U[k][i];
+		}
+		U[i][i] = sqrt(A[i][i]-tmp);
+		// Calculate non-diagonal elements
+		for(j=i+1;j<n;j++) {
+			tmp = 0.0;
+			for(k=0; k<i; k++) {
+				tmp += U[k][j]*U[k][i];	
+			}	
+			U[i][j] = (A[j][i] - tmp) / U[i][i];
+		}
+	}
+	end = omp_get_wtime();
+	printf("Cholesky: %f\n", end-start);
+		
+	/**
+	 * 3. Calculate L from U'
+	 */
+	start = omp_get_wtime();
+	// TODO L=U'
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=i; k< i+STRIPSIZE && k<n; k++) {
+				for(l=j; l < j+STRIPSIZE && l<n; l++) {
+					L[l][k] = U[k][l];
+				}	
+			}
+		}	
+	}
+	end = omp_get_wtime();
+	printf("L=U': %f\n", end-start);
+	
+	/**
+	 * 4. Compute B=LU
+	 */
+	start = omp_get_wtime();
+	// TODO B=LU
+	for(i=0; i<n; i++) {
+		for(k=0; k<n; k++) {
+			for(j=0; j<n; j++) {
+				B[i][j] += L[i][k] * U[k][j];
+			}
+		}
+	}
+	/*
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=0; k<n; k+=STRIPSIZE) {
+				for(ii=i; ii<i+STRIPSIZE && ii<n; ii++) {
+					for(jj=j; jj<j+STRIPSIZE && jj<n; jj++) {
+						for(kk=k; kk<k+STRIPSIZE && kk<n; kk++) {
+							B[ii][jj] += L[ii][kk] * U[kk][jj];
+						}
+					}
+				}
+			}
+		}
+	}
+	*/
+	end = omp_get_wtime();
+	printf("B=LU: %f\n", end-start);
+
+	/**
+	 * 5. Check if all elements of A and B have a difference smaller than 0.001%
+	 */
+	start = omp_get_wtime();
+	cnt=0;
+	// TODO check if matrices are equal
+	for(i=0; i<n; i++) {
+		for(j=0; j<n; j++) {
+			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) cnt++;
+		}
+	}
+	/*
+	for(i=0; i<n; i+=STRIPSIZE) {
+		for(j=0; j<n; j+=STRIPSIZE) {
+			for(k=i; k<i+STRIPSIZE && k<n; k++) {
+				for(l=j; l<k+STRIPSIZE && l<n; l++) {
+					if (abs(B[k][l] - A[k][l]) / A[k][l] > 0.001) cnt++;
+				}	
+			}
+		}
+	}
+	*/
+	if(cnt != 0) {
+		printf("Matrices are not equal\n");
+	} else {
+		printf("Matrices are equal\n");
+	}
+	end = omp_get_wtime();
+	printf("A==B?: %f\n", end-start);
 }
