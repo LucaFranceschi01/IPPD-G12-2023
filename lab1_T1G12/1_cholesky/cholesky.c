@@ -98,7 +98,7 @@ void cholesky_openmp(int n) {
      */
     start = omp_get_wtime();
     // TODO B=LU
-	#pragma omp parallel for 
+	#pragma omp parallel for
     for(i=0; i<n; i++) {
     	for(k=0; k<n; k++) { // swapped two inner loops (less cache misses)
 			for(j=0; j<n; j++) {
@@ -115,11 +115,10 @@ void cholesky_openmp(int n) {
     start = omp_get_wtime();
     cnt=0;
     // TODO check if matrices are equal
-	#pragma omp parallel for collapse(2)
+	#pragma omp parallel for collapse(2) reduction(+:cnt)
 	for(i=0; i<n; i++) {
 		for(j=0; j<n; j++) {
 			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) {
-				#pragma omp atomic
 				cnt++;
 			}
 		}
