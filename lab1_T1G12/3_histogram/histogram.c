@@ -113,23 +113,86 @@ int main (){
     // Assign x values to the right histogram bucket -- locks
     ////////////////////////////////////////////////////////////////
 
+	omp_lock_t lock;
+	omp_init_lock(&lock);
+
+	for(int i=0;i<num_buckets;i++)
+        hist[i] = 0;
+
+    // Assign x values to the right historgram bucket
+    time = omp_get_wtime();
+
+	#pragma omp parallel for private(ival)
+    for(int i=0;i<num_trials;i++){
+
+        ival = (long) (x[i] - xlow)/bucket_width;
+		omp_set_lock(&lock);
+        hist[ival]++;
+		omp_unset_lock(&lock);
+
+        #ifdef DEBUG
+        printf("i = %d,  xi = %f, ival = %d\n",i,(float)x[i], ival);
+        #endif
+
+    }
+
+    time = omp_get_wtime() - time;
+
+    // compute statistics ... ave, std-dev for whole histogram and quartiles
+    // -> this can be turned into a function
+    sumh=0.0, sumhsq=0.0;
+    for(int i=0;i<num_buckets;i++){
+        sumh   += (double) hist[i];
+        sumhsq += (double) hist[i]*hist[i];
+    }
+
+    ave     = sumh/num_buckets;
+    std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-
-
-
-
+    printf("Par with critical histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
+    printf("in %f seconds\n",(float)time);
 
     ////////////////////////////////////////////////////////////////
     // Assign x values to the right histogram bucket -- reduction
     ////////////////////////////////////////////////////////////////
 
+	for(int i=0;i<num_buckets;i++)
+        hist[i] = 0;
+
+    // Assign x values to the right historgram bucket
+    time = omp_get_wtime();
+
+	#pragma omp parallel for private(ival) reduction(+:hist)
+    for(int i=0;i<num_trials;i++){
+
+        ival = (long) (x[i] - xlow)/bucket_width;
+        hist[ival]++;
+
+        #ifdef DEBUG
+        printf("i = %d,  xi = %f, ival = %d\n",i,(float)x[i], ival);
+        #endif
+
+    }
+
+    time = omp_get_wtime() - time;
+
+    // compute statistics ... ave, std-dev for whole histogram and quartiles
+    // -> this can be turned into a function
+    sumh=0.0, sumhsq=0.0;
+    for(int i=0;i<num_buckets;i++){
+        sumh   += (double) hist[i];
+        sumhsq += (double) hist[i]*hist[i];
+    }
+
+    ave     = sumh/num_buckets;
+    std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-
-
-
-
+    printf("Par with critical histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
+    printf("in %f seconds\n",(float)time);
 
     return 0;
 }
