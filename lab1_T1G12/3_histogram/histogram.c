@@ -136,6 +136,8 @@ int main (){
 
     }
 
+	omp_destroy_lock(&lock);
+
     time = omp_get_wtime() - time;
 
     // compute statistics ... ave, std-dev for whole histogram and quartiles

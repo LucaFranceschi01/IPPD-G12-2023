@@ -1,0 +1,12 @@
+Sequential histogram for 50 buckets of 1000000 values
+ave = 20000.000000, std_dev = 394.372925
+in 0.001997 seconds
+Par with critical histogram for 50 buckets of 1000000 values
+ave = 20000.000000, std_dev = 394.372925
+in 0.026139 seconds
+Par with critical histogram for 50 buckets of 1000000 values
+ave = 20000.000000, std_dev = 394.372925
+in 0.030242 seconds
+Par with critical histogram for 50 buckets of 1000000 values
+ave = 20000.000000, std_dev = 394.372925
+in 0.002088 seconds
