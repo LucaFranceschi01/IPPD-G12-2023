@@ -36,3 +36,7 @@ use a logarithmic scale to print the results. Discuss the results.
 	1. Explain how have you solved each of the parallelizations.
 	2. Explain the time differences between different parallel methods if there are any.
 	3. Make a speedup plot for the different parallelization methods for 1, 2, 4, 8, and 16 cores. Discuss the results.
+
+4_Product_consumer:
+
+	1. Explain how have you synchronized the threads.
