@@ -71,19 +71,23 @@ int solve(int grid[SIZE][SIZE], int level) {
     int col = 0;
     if (!find_unassigned(grid, &row, &col)) return 1;
 
-    for (int num = 1; num <= SIZE; num++ ) {
+    for (int num = 1; num <= SIZE; num++) {
         if (is_safe_num(grid, row, col, num)) {
-            int copy_grid[SIZE][SIZE];
-            memcpy(copy_grid,grid,SIZE*SIZE*sizeof(int));
-            copy_grid[row][col] = num;
-            if(solve(copy_grid, level+1)) {
-                print_grid(copy_grid);
-                double end = omp_get_wtime();
-                double time_spent = end - start;
-                printf("\nFound in %f s\n",time_spent);
+			#pragma omp task firstprivate(grid, row, col, num, level) final(level>1)
+			{
+				int copy_grid[SIZE][SIZE];
+				memcpy(copy_grid,grid,SIZE*SIZE*sizeof(int));
+				copy_grid[row][col] = num;
+				if(solve(copy_grid, level+1)) {
+					print_grid(copy_grid);
+					double end = omp_get_wtime();
+					double time_spent = end - start;
+					printf("\nFound in %f s\n",time_spent);
+				}
             }
         }
     }
+	#pragma omp taskwait
     return 0;
 }
 
@@ -108,7 +112,11 @@ int main(int argc, char** argv) {
     print_grid(sudoku);
     printf("---------------------\n");
 
-    solve(sudoku,1);
+	#pragma omp parallel
+	{
+		#pragma omp single
+    	solve(sudoku,1);
+	}
 
     return 0;
 }
