@@ -152,7 +152,7 @@ int main (){
     std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-    printf("Par with critical histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("Par with locks histogram for %d buckets of %d values\n",num_buckets, num_trials);
     printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
     printf("in %f seconds\n",(float)time);
 
@@ -192,7 +192,7 @@ int main (){
     std_dev = sqrt(sumhsq - sumh*sumh/(double)num_buckets);
 
 
-    printf("Par with critical histogram for %d buckets of %d values\n",num_buckets, num_trials);
+    printf("Par with reduction histogram for %d buckets of %d values\n",num_buckets, num_trials);
     printf("ave = %f, std_dev = %f\n",(float)ave, (float)std_dev);
     printf("in %f seconds\n",(float)time);
 
