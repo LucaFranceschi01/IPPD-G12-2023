@@ -26,44 +26,60 @@ int randy = SEED;
 /* function to fill an array with random numbers */
 void fill_rand(int length, double *a)
 {
-  int i; 
-  for (i=0;i<length;i++) {
-    randy = (RAND_MULT * randy + RAND_ADD) % RAND_MOD;
-    *(a+i) = ((double) randy)/((double) RAND_MOD);
-  }
+	int i; 
+	for (i=0;i<length;i++) {
+		randy = (RAND_MULT * randy + RAND_ADD) % RAND_MOD;
+		*(a+i) = ((double) randy)/((double) RAND_MOD);
+	}
 }
 
 /* function to sum the elements of an array */
 double Sum_array(int length, double *a)
 {
-  int i;  double sum = 0.0;
-  for (i=0;i<length;i++)  sum += *(a+i);  
-  return sum; 
+	int i;  double sum = 0.0;
+	for (i=0;i<length;i++) sum += *(a+i);  
+	return sum; 
 }
-  
+	
 int main()
 {
-  double *A, sum, runtime;
-  int numthreads, flag = 0;
+	double *A, sum, runtime;
+	int numthreads, flag = 0;
 
-  int Nthreads = omp_get_max_threads();
-  omp_set_num_threads(Nthreads);
+	int Nthreads = omp_get_max_threads();
+	omp_set_num_threads(Nthreads);
 
-  A = (double *)malloc(N*sizeof(double));
+	if(Nthreads != 2) {
+		printf("Error: incorrect number of threads, %d\n", Nthreads);
+	return 1;
+	}
 
-  runtime = omp_get_wtime();
+	A = (double *)malloc(N*sizeof(double));
 
-  #pragma omp parallel sections num_threads(2)
-  {
-    #pragma omp section
-    fill_rand(N, A);        // Producer: fill an array of data
+	runtime = omp_get_wtime();
+	#pragma omp parallel sections
+	{
+		#pragma omp section
+		{
+			fill_rand(N, A);        // Producer: fill an array of data
+			#pragma omp flush
+			flag = 1;
+			#pragma omp flush(flag)
+		}
 
-    #pragma omp section
-    sum = Sum_array(N, A);  // Consumer: sum the array
-  }
-  
-  runtime = omp_get_wtime() - runtime;
+		#pragma omp section
+		{
+			while(!flag) {
+				#pragma omp flush(flag)
+			}
+			#pragma omp flush
+			sum = Sum_array(N, A);  // Consumer: sum the array
+		}
+	}
+	
+	runtime = omp_get_wtime() - runtime;
 
-  printf(" In %f seconds, The sum is %f \n",runtime,sum);
+	printf("In %f seconds, The sum is %f \n",runtime,sum);
+	return 0;
 }
  
