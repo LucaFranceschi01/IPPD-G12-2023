@@ -26,19 +26,19 @@ int randy = SEED;
 /* function to fill an array with random numbers */
 void fill_rand(int length, double *a)
 {
-   int i; 
-   for (i=0;i<length;i++) {
-     randy = (RAND_MULT * randy + RAND_ADD) % RAND_MOD;
-     *(a+i) = ((double) randy)/((double) RAND_MOD);
-   }   
+  int i; 
+  for (i=0;i<length;i++) {
+    randy = (RAND_MULT * randy + RAND_ADD) % RAND_MOD;
+    *(a+i) = ((double) randy)/((double) RAND_MOD);
+  }
 }
 
 /* function to sum the elements of an array */
 double Sum_array(int length, double *a)
 {
-   int i;  double sum = 0.0;
-   for (i=0;i<length;i++)  sum += *(a+i);  
-   return sum; 
+  int i;  double sum = 0.0;
+  for (i=0;i<length;i++)  sum += *(a+i);  
+  return sum; 
 }
   
 int main()
@@ -53,10 +53,15 @@ int main()
 
   runtime = omp_get_wtime();
 
-  fill_rand(N, A);        // Producer: fill an array of data
+  #pragma omp parallel sections num_threads(2)
+  {
+    #pragma omp section
+    fill_rand(N, A);        // Producer: fill an array of data
 
-  sum = Sum_array(N, A);  // Consumer: sum the array
-   
+    #pragma omp section
+    sum = Sum_array(N, A);  // Consumer: sum the array
+  }
+  
   runtime = omp_get_wtime() - runtime;
 
   printf(" In %f seconds, The sum is %f \n",runtime,sum);
