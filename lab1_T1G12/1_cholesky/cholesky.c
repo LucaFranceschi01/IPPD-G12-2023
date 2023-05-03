@@ -67,7 +67,7 @@ void cholesky_openmp(int n) {
 	for(i=0; i<n; i++) {
 		// Calculate diagonal elements
 		tmp = 0.0;
-		#pragma omp parallel for schedule(guided, 4) reduction(+:tmp)
+		#pragma omp parallel for schedule(dynamic) reduction(+:tmp)
 		for(k=0;k<i;k++) {
 			tmp += U[k][i]*U[k][i];
 		}
@@ -90,7 +90,7 @@ void cholesky_openmp(int n) {
 	 */
 	start = omp_get_wtime();
 	// TODO L=U'
-	#pragma omp parallel for private(i, j, k, l) shared(L, U) schedule(guided, 4)
+	#pragma omp parallel for private(i, j, k, l) shared(L, U) schedule(dynamic, 4)
 	for(i=0; i<n; i+=STRIPSIZE) {
 		for(j=i; j<n; j+=STRIPSIZE) {
 			for(k=i; k< i+STRIPSIZE && k<n; k++) {
@@ -108,7 +108,7 @@ void cholesky_openmp(int n) {
 	 */
 	start = omp_get_wtime();
 	// TODO B=LU
-	#pragma omp parallel for private(i, j, k) shared(B, L, U) schedule(guided, 4)
+	#pragma omp parallel for private(i, j, k) shared(B, L, U) schedule(guided)
 	for(i=0; i<n; i++) {
 		for(k=0; k<=i; k++) {
 			for(j=k; j<n; j++) {
@@ -116,17 +116,21 @@ void cholesky_openmp(int n) {
 			}
 		}
 	}
-	/*for(i=0; i<n; i++) {
+	// Worked fast taking advantage of spatial locality but does not skip zeros
+	/*
+	for(i=0; i<n; i++) {
 		for(k=0; k<=i; k++) {
 			for(j=0; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
-	}*/
+	}
+	*/
+	// Works nice but the condition is weird and not fast
 	/*
 	for(i=0; i<n; i++) {
 		for(j=0; j<n; j++) {
-			for(k=0; k<=fmin(i, j); k++) {
+			for(k=0; k<=min(i, j); k++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
@@ -147,6 +151,7 @@ void cholesky_openmp(int n) {
 			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) cnt++;
 		}
 	}
+	// Not needed and not that fast when implemented tbh
 	/*
 	for(i=0; i<n; i+=STRIPSIZE) {
 		for(j=0; j<n; j+=STRIPSIZE) {
@@ -274,15 +279,7 @@ void cholesky(int n) {
 			}
 		}
 	}
-	/*
-	for(i=0; i<n; i++) {
-		for(j=0; j<n; j++) {
-			for(k=0; k<=fmin(i, j); k++) {
-				B[i][j] += L[i][k] * U[k][j];
-			}
-		}
-	}
-	*/
+	
 	end = omp_get_wtime();
 	printf("B=LU: %f\n", end-start);
 
@@ -297,17 +294,7 @@ void cholesky(int n) {
 			if (abs(B[i][j] - A[i][j]) / A[i][j] > 0.001) cnt++;
 		}
 	}
-	/*
-	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=0; j<n; j+=STRIPSIZE) {
-			for(k=i; k<i+STRIPSIZE && k<n; k++) {
-				for(l=j; l<k+STRIPSIZE && l<n; l++) {
-					if (abs(B[k][l] - A[k][l]) / A[k][l] > 0.001) cnt++;
-				}	
-			}
-		}
-	}
-	*/
+	
 	if(cnt != 0) {
 		printf("Matrices are not equal\n");
 	} else {
