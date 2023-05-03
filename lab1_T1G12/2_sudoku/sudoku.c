@@ -87,7 +87,7 @@ int solve(int grid[SIZE][SIZE], int level) {
             }
         }
     }
-	#pragma omp taskwait
+	#pragma omp taskwait // Wait concurrently
     return 0;
 }
 

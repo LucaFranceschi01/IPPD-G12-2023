@@ -63,16 +63,16 @@ int main()
 		{
 			fill_rand(N, A);        // Producer: fill an array of data
 			#pragma omp flush
-			flag = 1;
+			flag = 1; // Once finished, raise flag
 			#pragma omp flush(flag)
 		}
 
 		#pragma omp section
 		{
-			while(!flag) {
+			while(!flag) { // Wait until flag is raised
 				#pragma omp flush(flag)
 			}
-			#pragma omp flush
+			#pragma omp flush // Make sure A is synchronized
 			sum = Sum_array(N, A);  // Consumer: sum the array
 		}
 	}

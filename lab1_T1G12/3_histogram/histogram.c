@@ -82,7 +82,7 @@ int main (){
     for(int i=0;i<num_trials;i++){
 
         ival = (long) (x[i] - xlow)/bucket_width;
-		#pragma omp critical
+		#pragma omp critical // maybe also atomic would work
         hist[ival]++;
 
         #ifdef DEBUG
