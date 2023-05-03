@@ -1,0 +1,15 @@
+Sequential Cholesky
+Initialization: 0.346873
+Cholesky: 42.067290
+L=U': 0.018656
+B=LU: 9.127149
+Matrices are equal
+A==B?: 0.026605
+
+OpenMP Cholesky
+Initialization: 0.343962
+Cholesky: 26.219705
+L=U': 0.014660
+B=LU: 4.560374
+Matrices are equal
+A==B?: 0.017193
