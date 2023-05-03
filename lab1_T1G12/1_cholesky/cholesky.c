@@ -110,23 +110,24 @@ void cholesky_openmp(int n) {
 	// TODO B=LU
 	#pragma omp parallel for private(i, j, k) shared(B, L, U)
 	for(i=0; i<n; i++) {
-		for(k=0; k<n; k++) {
-			for(j=0; j<n; j++) {
+		for(k=0; k<=i; k++) {
+			for(j=k; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
 	}
+	/*for(i=0; i<n; i++) {
+		for(k=0; k<=i; k++) {
+			for(j=0; j<n; j++) {
+				B[i][j] += L[i][k] * U[k][j];
+			}
+		}
+	}*/
 	/*
-	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=0; j<n; j+=STRIPSIZE) {
-			for(k=0; k<n; k+=STRIPSIZE) {
-				for(ii=i; ii<i+STRIPSIZE && ii<n; ii++) {
-					for(jj=j; jj<j+STRIPSIZE && jj<n; jj++) {
-						for(kk=k; kk<k+STRIPSIZE && kk<n; kk++) {
-							B[ii][jj] += L[ii][kk] * U[kk][jj];
-						}
-					}
-				}
+	for(i=0; i<n; i++) {
+		for(j=0; j<n; j++) {
+			for(k=0; k<=fmin(i, j); k++) {
+				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
 	}
@@ -267,23 +268,17 @@ void cholesky(int n) {
 	start = omp_get_wtime();
 	// TODO B=LU
 	for(i=0; i<n; i++) {
-		for(k=0; k<n; k++) {
-			for(j=0; j<n; j++) {
+		for(k=0; k<=i; k++) {
+			for(j=k; j<n; j++) {
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
 	}
 	/*
-	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=0; j<n; j+=STRIPSIZE) {
-			for(k=0; k<n; k+=STRIPSIZE) {
-				for(ii=i; ii<i+STRIPSIZE && ii<n; ii++) {
-					for(jj=j; jj<j+STRIPSIZE && jj<n; jj++) {
-						for(kk=k; kk<k+STRIPSIZE && kk<n; kk++) {
-							B[ii][jj] += L[ii][kk] * U[kk][jj];
-						}
-					}
-				}
+	for(i=0; i<n; i++) {
+		for(j=0; j<n; j++) {
+			for(k=0; k<=fmin(i, j); k++) {
+				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
 	}
