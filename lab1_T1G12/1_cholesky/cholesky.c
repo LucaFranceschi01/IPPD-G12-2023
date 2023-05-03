@@ -79,8 +79,7 @@ void cholesky_openmp(int n) {
 			for(k=0; k<i; k++) {
 				tmp += U[k][j]*U[k][i];	
 			}
-			tmp = (A[j][i] - tmp) / U[i][i];
-			U[i][j] = tmp;
+			U[i][j] = (A[j][i] - tmp) / U[i][i];
 		}
 	}
 	end = omp_get_wtime();

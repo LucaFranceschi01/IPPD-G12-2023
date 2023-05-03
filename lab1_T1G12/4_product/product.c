@@ -51,7 +51,7 @@ int main()
 
 	if(Nthreads != 2) {
 		printf("Error: incorrect number of threads, %d\n", Nthreads);
-	return 1;
+		return 1;
 	}
 
 	A = (double *)malloc(N*sizeof(double));
