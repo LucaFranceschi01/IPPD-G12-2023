@@ -90,9 +90,9 @@ void cholesky_openmp(int n) {
 	 */
 	start = omp_get_wtime();
 	// TODO L=U'
-	#pragma omp parallel for collapse(2) private(i, j, k, l) shared(L, U)
+	#pragma omp parallel for private(i, j, k, l) shared(L, U)
 	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=0; j<n; j+=STRIPSIZE) {
+		for(j=i; j<n; j+=STRIPSIZE) {
 			for(k=i; k< i+STRIPSIZE && k<n; k++) {
 				for(l=j; l < j+STRIPSIZE && l<n; l++) {
 					L[l][k] = U[k][l];
@@ -251,7 +251,7 @@ void cholesky(int n) {
 	start = omp_get_wtime();
 	// TODO L=U'
 	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=0; j<n; j+=STRIPSIZE) {
+		for(j=i; j<n; j+=STRIPSIZE) {
 			for(k=i; k< i+STRIPSIZE && k<n; k++) {
 				for(l=j; l < j+STRIPSIZE && l<n; l++) {
 					L[l][k] = U[k][l];
