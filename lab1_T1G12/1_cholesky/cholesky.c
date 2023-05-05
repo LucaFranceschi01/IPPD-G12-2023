@@ -90,9 +90,10 @@ void cholesky_openmp(int n) {
 	 */
 	start = omp_get_wtime();
 	// TODO L=U'
+	// Use stripmining to exploit spatial locality
 	#pragma omp parallel for private(i, j, k, l) shared(L, U) schedule(dynamic, 4)
 	for(i=0; i<n; i+=STRIPSIZE) {
-		for(j=i; j<n; j+=STRIPSIZE) {
+		for(j=i; j<n; j+=STRIPSIZE) { // Starting from i and not 0 skips zero elements
 			for(k=i; k< i+STRIPSIZE && k<n; k++) {
 				for(l=j; l < j+STRIPSIZE && l<n; l++) {
 					L[l][k] = U[k][l];
@@ -108,14 +109,15 @@ void cholesky_openmp(int n) {
 	 */
 	start = omp_get_wtime();
 	// TODO B=LU
-	#pragma omp parallel for private(i, j, k) shared(B, L, U) schedule(guided)
+	#pragma omp parallel for private(i, j, k) shared(B, L, U) schedule(guided) // Not sure about the guided scheduling, but it was the one with best results in the testing and the difference was not that impressive
 	for(i=0; i<n; i++) {
-		for(k=0; k<=i; k++) {
-			for(j=k; j<n; j++) {
+		for(k=0; k<=i; k++) { // Swapping the inner loop provides spatial locality --> speed
+			for(j=k; j<n; j++) { // The boundaries used in the inner loops make it so that zero elements are skipped
 				B[i][j] += L[i][k] * U[k][j];
 			}
 		}
 	}
+	// Other options that were not the most efficient
 	// Worked fast taking advantage of spatial locality but does not skip zeros
 	/*
 	for(i=0; i<n; i++) {
