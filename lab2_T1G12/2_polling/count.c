@@ -16,7 +16,7 @@ typedef struct {
 }  tRecord;
 
 /* Main program */
-int main (int argc, char **argv)
+int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 {
 	int rank, nprocs;
 	int recordsize, filenumrecords, rem, numrecords;
@@ -84,6 +84,9 @@ int main (int argc, char **argv)
 	printf ("Proc %3d. Counted votes = %d\n", rank, total);
 
 	/* Print global results on process 0 */
+	MPI_Barrier(MPI_COMM_WORLD); // TODO: WHY IT DOES NOT PRINT IN THE CORRECT ORDER!!!
+	MPI_Reduce(&yes, &totYes, MAX_QUEST, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+	MPI_Reduce(&no, &totNo, MAX_QUEST, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	if (rank == 0)
 	{

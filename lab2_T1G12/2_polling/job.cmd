@@ -3,7 +3,7 @@
 #SBATCH -p ippd-cpu
 #SBATCH --output=out_polling_%j.out
 #SBATCH --error=out_polling_%j.err
-#SBATCH --ntasks=8
+#SBATCH --ntasks=4
 #SBATCH --nodes=1
 #SBATCH --time=00:00:30
 
