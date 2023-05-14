@@ -8,6 +8,8 @@ int main (int argc, char **argv) {
 
     int rank, nprocs;
 
+	if(argc > 1) return 1;
+
     // MPI Init
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
