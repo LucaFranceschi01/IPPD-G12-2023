@@ -10,6 +10,6 @@
 module load GCC/10.2.0
 module load OpenMPI
 
-make bug1 >> make.out || exit 1      # Exit if make fails
+make bug3 >> make.out || exit 1      # Exit if make fails
 
-mpirun -np 2 bug1
+mpirun -np 2 bug3

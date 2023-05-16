@@ -11,11 +11,11 @@
 #define  MASTER		0
 
 double  data[ARRAYSIZE];
+double update(int myoffset, int chunk, int myid);
 
 int main (int argc, char *argv[]) {
     int   numtasks, taskid, rc, dest, offset, i, j, tag1, tag2, source, chunksize;
     double mysum, sum;
-    double update(int myoffset, int chunk, int myid);
     MPI_Status status;
 
     /***** Initializations *****/
@@ -41,7 +41,7 @@ int main (int argc, char *argv[]) {
 
         /* Send each task its portion of the array - master keeps 1st part */
         offset = chunksize;
-        for (dest=0; dest<numtasks; dest++) {
+        for (dest=1; dest<numtasks; dest++) {
             MPI_Send(&offset, 1, MPI_INT, dest, tag1, MPI_COMM_WORLD);
             MPI_Send(&data[offset], chunksize, MPI_DOUBLE, dest, tag2, MPI_COMM_WORLD);
             printf("Sent %d elements to task %d offset= %d\n",chunksize,dest,offset);
@@ -53,11 +53,9 @@ int main (int argc, char *argv[]) {
         mysum = update(offset, chunksize, taskid);
 
         /* Wait to receive results from each task */
-        for (i=0; i<numtasks; i++) {
-            source = i;
+        for (source=1; source<numtasks; source++) {
             MPI_Recv(&offset, 1, MPI_INT, source, tag1, MPI_COMM_WORLD, &status);
-            MPI_Recv(&data[offset], chunksize, MPI_DOUBLE, source, tag2,
-            MPI_COMM_WORLD, &status);
+            MPI_Recv(&data[offset], chunksize, MPI_DOUBLE, source, tag2, MPI_COMM_WORLD, &status);
         }
 
         /* Get final sum and print sample results */
@@ -69,6 +67,8 @@ int main (int argc, char *argv[]) {
             printf("\n");
             offset = offset + chunksize;
         }
+		MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, MASTER, MPI_COMM_WORLD);
         printf("*** Final sum= %e ***\n",sum);
 
     }  /* end of master section */
@@ -90,7 +90,7 @@ int main (int argc, char *argv[]) {
         /* Send my results back to the master task */
         dest = MASTER;
         MPI_Send(&offset, 1, MPI_INT, dest, tag1, MPI_COMM_WORLD);
-        MPI_Send(&data[offset], chunksize, MPI_DOUBLE, MASTER, tag2, MPI_COMM_WORLD);
+        MPI_Send(&data[offset], chunksize, MPI_DOUBLE, dest, tag2, MPI_COMM_WORLD);
 
         /* Use sum reduction operation to obtain final sum */
         MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, MASTER, MPI_COMM_WORLD);
