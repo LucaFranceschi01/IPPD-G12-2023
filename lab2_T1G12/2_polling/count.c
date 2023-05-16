@@ -51,6 +51,9 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	/* Each process determines number of records to read and initial offset */
 	MPI_File_get_size(infile, &filesize);
 	filenumrecords = filesize / sizeof(tRecord);
+
+	if(filenumrecords % nprocs != 0) return 1; // just in case
+
 	numrecords = filenumrecords / nprocs; // hope that it is divisible
 	MPI_File_seek(infile, numrecords*rank*sizeof(tRecord), MPI_SEEK_SET);
 
@@ -81,8 +84,14 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	for(i=0; i<MAX_QUEST; i++) total += yes[i] + no[i];
 
 	/* Print local results */
-	printf ("Proc %3d. Counted votes = %d\n", rank, total);
-
+	for(i = 0; i < nprocs; i++) {
+		if (rank == i) {
+			printf("Proc %3d. Counted votes = %d\n", i, total); // print other totals
+			fflush(stdout); // FLUSH BUFFER AFTER PRINT 
+		}
+		MPI_Barrier(MPI_COMM_WORLD);
+	}
+	// fflush(stdout);
 	/* Print global results on process 0 */
 	MPI_Barrier(MPI_COMM_WORLD); // TODO: WHY IT DOES NOT PRINT IN THE CORRECT ORDER!!!
 	MPI_Reduce(&yes, &totYes, MAX_QUEST, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
