@@ -36,6 +36,8 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	MPI_Comm_size (MPI_COMM_WORLD, &nprocs);
 
 	/* Create datatype */
+
+	// TODO: BASTA CON MPI_CONTIGUOUS O SE TIENE QUE HACER CON STRUCT??
 	int count = 4;
 	int blocklens[] = {1, 1, 1, 1};
 	MPI_Aint lowerbound, extent;
