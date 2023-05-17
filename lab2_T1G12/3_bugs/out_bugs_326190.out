@@ -1,0 +1,89 @@
+Task 0 starting...
+Sent to task 1...
+Task 1 starting...
+Received from task 0...
+Sent to task 0...
+Received from task 1...
+Task 0 sent = 0
+Task 0 sent = 10
+Task 0 sent = 20
+Task 0 sent = 30
+Task 0 sent = 40
+Task 0 sent = 50
+Task 0 sent = 60
+Task 0 sent = 70
+Task 0 sent = 80
+Task 0 sent = 90
+Task 1 received = 0
+Task 1 received = 10
+Task 1 received = 20
+Task 1 received = 30
+Task 1 received = 40
+Task 1 received = 50
+Task 1 received = 60
+Task 1 received = 70
+Task 1 received = 80
+Task 1 received = 90
+MPI task 0 has started...  Initialized array sum = 2.000000e+14
+numtasks= 2  chunksize= 10000000
+Sent 10000000 elements to task 1 offset= 10000000
+MPI task 1 has started...  Task 1 mysum = 3.000000e+14
+Task 0 mysum = 9.999999e+13
+Sample results: 
+  0.000000e+00  2.000000e+00  4.000000e+00  6.000000e+00  8.000000e+00
+  2.000000e+07  2.000000e+07  2.000000e+07  2.000001e+07  2.000001e+07
+*** Final sum= 4.000000e+14 ***
+Starting isend/irecv send/irecv test...
+Task 2 starting...
+Task 2 has done 100 sends
+Task 2 has done 200 sends
+Task 3 starting...
+Task 3 has done 100 irecvs
+Task 3 has done 200 irecvs
+Task 3 has done 300 irecvs
+Task 3 has done 400 irecvs
+Task 3 has done 500 irecvs
+Task 3 has done 600 irecvs
+Task 3 has done 700 irecvs
+Task 3 has done 800 irecvs
+Task 3 has done 900 irecvs
+Task 3 has done 1000 irecvs
+Task 0 starting...
+Task 0 has done 100 isends/irecvs
+Task 0 has done 200 isends/irecvs
+Task 0 has done 300 isends/irecvs
+Task 0 has done 400 isends/irecvs
+Task 0 has done 500 isends/irecvs
+Task 1 starting...
+Task 1 has done 100 isends/irecvs
+Task 1 has done 200 isends/irecvs
+Task 1 has done 300 isends/irecvs
+Task 1 has done 400 isends/irecvs
+Task 1 has done 500 isends/irecvs
+Task 0 has done 600 isends/irecvs
+Task 2 has done 300 sends
+Task 1 has done 600 isends/irecvs
+Task 1 has done 700 isends/irecvs
+Task 1 has done 800 isends/irecvs
+Task 1 has done 900 isends/irecvs
+Task 1 has done 1000 isends/irecvs
+Task 1 time(wall)= 0.002655 sec
+Task 3 time(wall)= 0.000675 sec
+Task 0 has done 700 isends/irecvs
+Task 0 has done 800 isends/irecvs
+Task 0 has done 900 isends/irecvs
+Task 0 has done 1000 isends/irecvs
+Task 0 time(wall)= 0.002648 sec
+Task 2 has done 400 sends
+Task 2 has done 500 sends
+Task 2 has done 600 sends
+Task 2 has done 700 sends
+Task 2 has done 800 sends
+Task 2 has done 900 sends
+Task 2 has done 1000 sends
+Task 2 time(wall)= 0.000638 sec
+Task 0 on node003 starting...
+Root: Number of MPI tasks is: 4
+Task 1 on node003 starting...
+Task 2 on node003 starting...
+Task 3 on node003 starting...

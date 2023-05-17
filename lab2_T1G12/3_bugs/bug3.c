@@ -67,7 +67,6 @@ int main (int argc, char *argv[]) {
             printf("\n");
             offset = offset + chunksize;
         }
-		MPI_Barrier(MPI_COMM_WORLD);
         MPI_Reduce(&mysum, &sum, 1, MPI_DOUBLE, MPI_SUM, MASTER, MPI_COMM_WORLD);
         printf("*** Final sum= %e ***\n",sum);
 

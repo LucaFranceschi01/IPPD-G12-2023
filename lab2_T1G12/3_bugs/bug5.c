@@ -20,7 +20,7 @@ int main (int argc, char *argv[]) {
     printf ("Task %d on %s starting...\n", taskid, hostname);
     buffer = 23;
     root = 0;
-    count = taskid;
+    count = 1;
     if (taskid == root)
         printf("Root: Number of MPI tasks is: %d\n",numtasks);
 
