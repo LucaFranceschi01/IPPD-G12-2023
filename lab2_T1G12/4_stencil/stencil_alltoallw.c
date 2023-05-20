@@ -119,15 +119,24 @@ int main(int argc, char **argv)
 		}
 		else if(i == south) {
 			send_counts[i] = bx;
-		}
-		else if(i == east) {
-			send_counts[i] = by;
+			sdispls[i] = (ind_f(rx, ry+1, bx) - bx*px - 2) * sizeof(double);
+			rdispls[i] = ind_f(rx, ry+1, bx) * sizeof(double);
 		}
 		else if(i == west) {
 			send_counts[i] = by;
+			sdispls[i] = ind_f(rx, ry, bx) * sizeof(double);
+			rdispls[i] = (ind_f(rx, ry, bx) - 1) * sizeof(double);
 		}
-		else send_counts[i] = 0;
-
+		else if(i == east) {
+			send_counts[i] = by;
+			sdispls[i] = (ind_f(rx+1, ry, bx) - 1) * sizeof(double);
+			rdispls[i] = ind_f(rx+1, ry, bx) * sizeof(double);
+		}
+		else {
+			send_counts[i] = 0;
+			sdispls[i] = 0;
+			rdispls[i] = 0;
+		}
 	}
 
 
