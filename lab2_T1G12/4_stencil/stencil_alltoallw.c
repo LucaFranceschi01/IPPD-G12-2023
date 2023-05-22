@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 	int *sdispls, *rdispls;
 	MPI_Datatype typeNS, typeEW;
 
-	int iter, i, count;
+	int iter, i;
 
 	double *aold, *anew, *tmp;
 
@@ -77,10 +77,10 @@ int main(int argc, char **argv)
 	ry = rank / py; // Integer division truncates result
 
 	/* determine my four neighbors */
-	if ((rank + 1) / py == ry) east = rank + 1;
-	if ((rank - 1) / py == ry) west = rank - 1;
 	if ((rank - px) >= 0) north = rank - px;
 	if ((rank + px) < (px*py)) south = rank + px;
+	if ((rank - 1) / py == ry) west = rank - 1;
+	if ((rank + 1) / py == ry) east = rank + 1;
 
 	/* decompose the domain */
 	bx = n / px;
@@ -97,11 +97,11 @@ int main(int argc, char **argv)
 	alloc_bufs(bx, by, &aold, &anew);
 
 	/* create north-south datatype */
-	MPI_Type_contiguous(bx, MPI_DOUBLE, typeNS);
+	MPI_Type_contiguous(bx, MPI_DOUBLE, &typeNS);
 	MPI_Type_commit(&typeNS);
 
 	/* create east-west datatype */
-	MPI_Type_vector(by, 1, bx+2, MPI_DOUBLE, typeEW);
+	MPI_Type_vector(by, 1, bx+2, MPI_DOUBLE, &typeEW);
 	MPI_Type_commit(&typeEW);
 
 	/* prepare arguments of alltoallw */ // DISPLACEMENTS IN BYTES 
@@ -110,36 +110,35 @@ int main(int argc, char **argv)
 	rdispls = (int*) malloc(size*sizeof(int));
 	sdispls = (int*) malloc(size*sizeof(int));
 
-	count = 0;
 	for (i = 0; i < size; i++) {
 		if(i == north) {
 			send_counts[i] = bx;
-			sdispls[i] = ind_f(rx, ry, bx) * sizeof(double);
-			rdispls[i] = (ind_f(rx, ry, bx) - bx*px - 2) * sizeof(double);
+			sdispls[i] = ind_f(rx*bx, ry*by, bx) * sizeof(double); // (first col, first row) of block
+			rdispls[i] = ind_f(rx*bx, ry*by-1, bx) * sizeof(double); // north halo (first row-1, first col)
 		}
 		else if(i == south) {
 			send_counts[i] = bx;
-			sdispls[i] = (ind_f(rx, ry+1, bx) - bx*px - 2) * sizeof(double);
-			rdispls[i] = ind_f(rx, ry+1, bx) * sizeof(double);
+			sdispls[i] = ind_f(rx*bx, ry*by+by, bx) * sizeof(double); // (first col, last row) of block
+			rdispls[i] = ind_f(rx*bx, ry*by+by+1, bx) * sizeof(double); // south halo (first col, last row+1)
 		}
 		else if(i == west) {
 			send_counts[i] = by;
-			sdispls[i] = ind_f(rx, ry, bx) * sizeof(double);
-			rdispls[i] = (ind_f(rx, ry, bx) - 1) * sizeof(double);
+			sdispls[i] = ind_f(rx*bx, ry*by, bx) * sizeof(double); // (first col, first row) of block
+			rdispls[i] = ind_f(rx*bx-1, ry*by, bx) * sizeof(double); // west halo (first col-1, first row)
 		}
 		else if(i == east) {
 			send_counts[i] = by;
-			sdispls[i] = (ind_f(rx+1, ry, bx) - 1) * sizeof(double);
-			rdispls[i] = ind_f(rx+1, ry, bx) * sizeof(double);
+			sdispls[i] = ind_f(rx*bx+bx, ry*by, bx) * sizeof(double); // (last col, first row) of block
+			rdispls[i] = ind_f(rx*bx+bx+1, ry*by, bx) * sizeof(double); // east halo (last col+1, first row)
 		}
 		else {
 			send_counts[i] = 0;
 			sdispls[i] = 0;
 			rdispls[i] = 0;
 		}
+		printf("R%d---%i count=%d sdis=%d rdis=%d\n", rank, i, send_counts[i], sdispls[i], rdispls[i]);
 	}
-
-
+	
 	/* use different count parameters because some MPI implementations do not consider displacements
 	 * in aliasing check */
 	memcpy(recv_counts, send_counts, size * sizeof(int));
@@ -155,8 +154,8 @@ int main(int argc, char **argv)
 
 		PERF_COMM_BEGIN();
 		/* COMMUNICATION */ // MPI PROCESS NULL if neighbor is -1
-
-
+		
+		
 
 		PERF_COMM_END();
 
@@ -183,6 +182,7 @@ int main(int argc, char **argv)
 
 	/* get final heat in the system */
 
+	rheat = 0;
 
 	if (!rank) {
 		printf("[%i] last heat: %f \n", rank, rheat);
