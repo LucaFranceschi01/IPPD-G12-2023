@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=ex1
+#SBATCH --job-name=ex2
 #SBATCH -p ippd-cpu
 #SBATCH --output=out_polling_%j.out
 #SBATCH --error=out_polling_%j.err

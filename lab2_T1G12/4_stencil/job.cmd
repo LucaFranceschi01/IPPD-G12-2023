@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=ex1
+#SBATCH --job-name=ex4
 #SBATCH -p ippd-cpu
 #SBATCH --output=out_stencil_%j.out
 #SBATCH --error=out_stencil_%j.err
