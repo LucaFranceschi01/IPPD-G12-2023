@@ -1,0 +1,1229 @@
+[node010:4010950:0:4010950] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010951:0:4010951] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010952:0:4010952] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010953:0:4010953] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000011)
+[node010:4010954:0:4010954] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010957:0:4010957] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347603:0:347603] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347604:0:347604] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010956:0:4010956] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010958:0:4010958] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347605:0:347605] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010959:0:4010959] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347608:0:347608] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010950) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010950] *** Process received signal ***
+[node010:4010950] Signal: Segmentation fault (11)
+[node010:4010950] Signal code:  (-6)
+[node010:4010950] Failing at address: 0xff776003d33c6
+[node009:347609:0:347609] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+srun: error: node010: tasks 32,43,45,49,52-55,58-60,62-63: Segmentation fault (core dumped)
+[node010:4010950] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14a2a7968b30]
+[node010:4010950] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14a2a8f0e3b6]
+[node010:4010950] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010950] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14a2a868b4a3]
+[node010:4010950] [ 4] stencil_alltoallw[0x40106e]
+[node009:347610:0:347610] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010950] *** End of error message ***
+==== backtrace (tid:4010951) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010951] *** Process received signal ***
+[node010:4010951] Signal: Segmentation fault (11)
+[node010:4010951] Signal code:  (-6)
+[node010:4010951] Failing at address: 0xff776003d33c7
+[node009:347611:0:347611] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010951] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x15208df5cb30]
+==== backtrace (tid: 347603) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+[node010:4010951] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x15208f5023b6]
+[node010:4010951] [ 2] stencil_alltoallw[0x401a64]
+==== backtrace (tid: 347604) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010951] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x15208ec7f4a3]
+[node010:4010951] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010951] *** End of error message ***
+==== backtrace (tid: 347605) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347603] *** Process received signal ***
+[node009:347603] Signal: Segmentation fault (11)
+[node009:347603] Signal code:  (-6)
+[node009:347603] Failing at address: 0xff77600054dd3
+[node009:347604] *** Process received signal ***
+[node009:347604] Signal: Segmentation fault (11)
+[node009:347604] Signal code:  (-6)
+[node009:347604] Failing at address: 0xff77600054dd4
+[node009:347605] *** Process received signal ***
+[node009:347605] Signal: Segmentation fault (11)
+[node009:347605] Signal code:  (-6)
+[node009:347605] Failing at address: 0xff77600054dd5
+[node010:4010961:0:4010961] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347605] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14b770b70b30]
+==== backtrace (tid:4010952) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347603] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1530365f9b30]
+srun: error: node010: tasks 37,57,61: Segmentation fault (core dumped)
+srun: error: node009: tasks 0,10,25-27,29-31: Segmentation fault (core dumped)
+=================================
+[node009:347604] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1530239fab30]
+[node010:4010952] *** Process received signal ***
+[node009:347605] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14b7721163b6]
+[node009:347605] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010952] Signal: Segmentation fault (11)
+[node010:4010952] Signal code:  (-6)
+[node010:4010952] Failing at address: 0xff776003d33c8
+[node009:347603] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x153037b9f3b6]
+[node009:347603] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347603] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x15303731c4a3]
+[node009:347603] [ 4] stencil_alltoallw[0x40106e]
+==== backtrace (tid:4010954) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347604] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x153024fa03b6]
+[node009:347604] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347604] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x15302471d4a3]
+[node009:347604] [ 4] stencil_alltoallw[0x40106e]
+=================================
+[node009:347605] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14b7718934a3]
+[node009:347605] [ 4] stencil_alltoallw[0x40106e]
+[node009:347605] *** End of error message ***
+[node010:4010954] *** Process received signal ***
+[node010:4010954] Signal: Segmentation fault (11)
+[node010:4010954] Signal code:  (-6)
+[node010:4010954] Failing at address: 0xff776003d33ca
+[node009:347603] *** End of error message ***
+[node010:4010954] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x15521624eb30]
+[node009:347604] *** End of error message ***
+[node010:4010954] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1552177f43b6]
+[node010:4010952] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14fa65023b30]
+[node010:4010952] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14fa665c93b6]
+srun: error: node010: tasks 33-36,38,40-42: Segmentation fault (core dumped)
+srun: error: node009: tasks 7,9,12,20: Segmentation fault (core dumped)
+[node009:347613:0:347613] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010954] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010954] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x155216f714a3]
+[node010:4010952] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010952] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14fa65d464a3]
+[node010:4010952] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010952] *** End of error message ***
+[node009:347614:0:347614] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010954] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010954] *** End of error message ***
+[node009:347615:0:347615] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000011)
+[node010:4010966:0:4010966] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347616:0:347616] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347610) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347608) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+[node010:4010963:0:4010963] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347610] *** Process received signal ***
+[node009:347610] Signal: Segmentation fault (11)
+[node009:347610] Signal code:  (-6)
+[node009:347610] Failing at address: 0xff77600054dda
+[node010:4010962:0:4010962] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347608] *** Process received signal ***
+[node009:347608] Signal: Segmentation fault (11)
+[node009:347608] Signal code:  (-6)
+[node009:347608] Failing at address: 0xff77600054dd8
+[node009:347610] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1512c7080b30]
+[node010:4010964:0:4010964] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+srun: error: node010: task 39: Segmentation fault (core dumped)
+[node009:347610] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1512c86263b6]
+srun: error: node009: tasks 3,6,8,11,13-14: Segmentation fault (core dumped)
+[node009:347608] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14e704ce4b30]
+[node009:347608] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14e70628a3b6]
+[node009:347608] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010971:0:4010971] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347610] [ 2] stencil_alltoallw[0x401a64]
+[node009:347608] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14e705a074a3]
+[node009:347610] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1512c7da34a3]
+[node009:347608] [ 4] stencil_alltoallw[0x40106e]
+[node009:347608] *** End of error message ***
+[node009:347610] [ 4] stencil_alltoallw[0x40106e]
+[node009:347610] *** End of error message ***
+==== backtrace (tid: 347609) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347611) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010968:0:4010968] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347609] *** Process received signal ***
+[node009:347609] Signal: Segmentation fault (11)
+[node009:347609] Signal code:  (-6)
+[node009:347609] Failing at address: 0xff77600054dd9
+[node010:4010967:0:4010967] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347611] *** Process received signal ***
+[node009:347611] Signal: Segmentation fault (11)
+[node009:347611] Signal code:  (-6)
+[node009:347611] Failing at address: 0xff77600054ddb
+[node009:347611] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x149a3c6f0b30]
+[node009:347609] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14ac1ac4eb30]
+[node009:347611] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x149a3dc963b6]
+[node009:347611] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010969:0:4010969] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+srun: error: node009: tasks 5,15: Segmentation fault (core dumped)
+[node009:347609] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14ac1c1f43b6]
+[node009:347609] [ 2] stencil_alltoallw[0x401a64]
+[node009:347609] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14ac1b9714a3]
+[node009:347609] [ 4] stencil_alltoallw[0x40106e]
+[node009:347609] *** End of error message ***
+[node009:347611] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x149a3d4134a3]
+[node009:347611] [ 4] stencil_alltoallw[0x40106e]
+[node009:347611] *** End of error message ***
+[node009:347618:0:347618] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010965:0:4010965] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010970:0:4010970] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010953) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347619:0:347619] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010953] *** Process received signal ***
+[node010:4010953] Signal: Segmentation fault (11)
+[node010:4010953] Signal code:  (-6)
+[node010:4010953] Failing at address: 0xff776003d33c9
+[node010:4010953] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1489e6f37b30]
+[node010:4010953] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1489e84dd3b6]
+[node010:4010953] [ 2] stencil_alltoallw[0x401a64]
+srun: error: node010: tasks 44,46-48,56: Segmentation fault (core dumped)
+[node009:347620:0:347620] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010953] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1489e7c5a4a3]
+[node010:4010953] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010953] *** End of error message ***
+[node009:347621:0:347621] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010972:0:4010972] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010973:0:4010973] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010956) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010956] *** Process received signal ***
+[node010:4010956] Signal: Segmentation fault (11)
+[node010:4010956] Signal code:  (-6)
+[node010:4010956] Failing at address: 0xff776003d33cc
+[node009:347622:0:347622] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010956] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x149dd2c95b30]
+[node010:4010956] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x149dd423b3b6]
+[node010:4010956] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010956] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x149dd39b84a3]
+[node010:4010956] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010956] *** End of error message ***
+srun: error: node009: tasks 4,16-19,21-22,24,28: Segmentation fault (core dumped)
+==== backtrace (tid:4010957) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347623:0:347623] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+=================================
+[node010:4010957] *** Process received signal ***
+[node010:4010957] Signal: Segmentation fault (11)
+[node010:4010957] Signal code:  (-6)
+[node010:4010957] Failing at address: 0xff776003d33cd
+[node010:4010957] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x145d8a890b30]
+[node010:4010957] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x145d8be363b6]
+srun: error: node010: tasks 50-51: Segmentation fault (core dumped)
+[node009:347624:0:347624] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010957] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010957] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x145d8b5b34a3]
+[node010:4010957] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010957] *** End of error message ***
+==== backtrace (tid:4010958) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+==== backtrace (tid:4010959) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+srun: error: node009: task 23: Segmentation fault (core dumped)
+[node009:347625:0:347625] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+=================================
+=================================
+[node010:4010958] *** Process received signal ***
+[node010:4010958] Signal: Segmentation fault (11)
+[node010:4010958] Signal code:  (-6)
+[node010:4010958] Failing at address: 0xff776003d33ce
+[node009:347626:0:347626] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010959] *** Process received signal ***
+[node010:4010959] Signal: Segmentation fault (11)
+[node010:4010959] Signal code:  (-6)
+[node010:4010959] Failing at address: 0xff776003d33cf
+[node010:4010958] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x145bdfdcbb30]
+[node010:4010958] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x145be13713b6]
+[node010:4010958] [ 2] stencil_alltoallw[0x401a64]
+[node009:347627:0:347627] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010958] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x145be0aee4a3]
+[node010:4010958] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010958] *** End of error message ***
+[node010:4010959] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14613ab77b30]
+[node010:4010959] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14613c11d3b6]
+[node009:347597:0:347597] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010959] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010959] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14613b89a4a3]
+[node010:4010959] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010959] *** End of error message ***
+[node009:347628:0:347628] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347616) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347614) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347615) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347616] *** Process received signal ***
+[node009:347616] Signal: Segmentation fault (11)
+[node009:347616] Signal code:  (-6)
+[node009:347616] Failing at address: 0xff77600054de0
+[node010:4010975:0:4010975] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347613) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+[node010:4010976:0:4010976] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node010:4010977:0:4010977] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+=================================
+==== backtrace (tid:4010961) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347613] *** Process received signal ***
+[node009:347613] Signal: Segmentation fault (11)
+[node009:347613] Signal code:  (-6)
+[node009:347613] Failing at address: 0xff77600054ddd
+=================================
+[node009:347614] *** Process received signal ***
+[node009:347614] Signal: Segmentation fault (11)
+[node009:347614] Signal code:  (-6)
+[node009:347614] Failing at address: 0xff77600054dde
+[node010:4010961] *** Process received signal ***
+[node010:4010961] Signal: Segmentation fault (11)
+[node010:4010961] Signal code:  (-6)
+[node010:4010961] Failing at address: 0xff776003d33d1
+[node009:347615] *** Process received signal ***
+[node009:347615] Signal: Segmentation fault (11)
+[node009:347615] Signal code:  (-6)
+[node009:347615] Failing at address: 0xff77600054ddf
+[node010:4010961] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x154003dc6b30]
+[node009:347613] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14a5c282ab30]
+[node010:4010961] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x15400536c3b6]
+[node009:347614] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x146f498b2b30]
+[node010:4010961] [ 2] stencil_alltoallw[0x401a64]
+[node009:347615] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14942e311b30]
+[node009:347615] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14942f8b73b6]
+==== backtrace (tid:4010963) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347613] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14a5c3dd03b6]
+[node010:4010961] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x154004ae94a3]
+[node009:347614] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x146f4ae583b6]
+[node010:4010961] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010961] *** End of error message ***
+[node009:347613] [ 2] stencil_alltoallw[0x401a64]
+=================================
+[node009:347614] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010963] *** Process received signal ***
+[node009:347615] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010963] Signal: Segmentation fault (11)
+[node010:4010963] Signal code:  (-6)
+[node010:4010963] Failing at address: 0xff776003d33d3
+[node009:347616] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14595e7d3b30]
+[node009:347616] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14595fd793b6]
+[node009:347616] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010963] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1535b3790b30]
+[node010:4010963] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1535b4d363b6]
+[node010:4010963] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010963] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1535b44b34a3]
+[node009:347613] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14a5c354d4a3]
+[node009:347613] [ 4] stencil_alltoallw[0x40106e]
+[node009:347613] *** End of error message ***
+==== backtrace (tid:4010964) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347614] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x146f4a5d54a3]
+[node009:347614] [ 4] stencil_alltoallw[0x40106e]
+[node009:347614] *** End of error message ***
+[node010:4010963] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010963] *** End of error message ***
+[node009:347615] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14942f0344a3]
+[node009:347615] [ 4] stencil_alltoallw[0x40106e]
+[node009:347615] *** End of error message ***
+[node010:4010964] *** Process received signal ***
+[node009:347616] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14595f4f64a3]
+[node010:4010964] Signal: Segmentation fault (11)
+[node010:4010964] Signal code:  (-6)
+[node010:4010964] Failing at address: 0xff776003d33d4
+[node009:347616] [ 4] stencil_alltoallw[0x40106e]
+[node009:347616] *** End of error message ***
+[node010:4010964] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14828afdfb30]
+==== backtrace (tid: 347618) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010964] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14828c5853b6]
+[node009:347618] *** Process received signal ***
+[node010:4010964] [ 2] stencil_alltoallw[0x401a64]
+[node009:347618] Signal: Segmentation fault (11)
+[node009:347618] Signal code:  (-6)
+[node009:347618] Failing at address: 0xff77600054de2
+[node010:4010964] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14828bd024a3]
+[node010:4010964] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010964] *** End of error message ***
+[node009:347618] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x151615694b30]
+[node009:347618] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x151616c3a3b6]
+[node009:347618] [ 2] stencil_alltoallw[0x401a64]
+==== backtrace (tid:4010973) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347618] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1516163b74a3]
+[node010:4010980:0:4010980] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347618] [ 4] stencil_alltoallw[0x40106e]
+[node009:347618] *** End of error message ***
+[node010:4010973] *** Process received signal ***
+[node010:4010973] Signal: Segmentation fault (11)
+[node010:4010973] Signal code:  (-6)
+[node010:4010973] Failing at address: 0xff776003d33dd
+==== backtrace (tid: 347619) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+[node010:4010973] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1518ca1c2b30]
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347619] *** Process received signal ***
+[node010:4010973] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1518cb7683b6]
+[node009:347619] Signal: Segmentation fault (11)
+[node009:347619] Signal code:  (-6)
+[node009:347619] Failing at address: 0xff77600054de3
+[node010:4010973] [ 2] stencil_alltoallw[0x401a64]
+[node009:347619] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14cd36710b30]
+[node010:4010973] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1518caee54a3]
+[node009:347619] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14cd37cb63b6]
+[node009:347619] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010973] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010973] *** End of error message ***
+[node009:347619] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14cd374334a3]
+[node009:347619] [ 4] stencil_alltoallw[0x40106e]
+[node009:347619] *** End of error message ***
+==== backtrace (tid:4010968) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347621) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+==== backtrace (tid:4010965) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010968] *** Process received signal ***
+[node010:4010968] Signal: Segmentation fault (11)
+[node010:4010968] Signal code:  (-6)
+[node010:4010968] Failing at address: 0xff776003d33d8
+[node009:347621] *** Process received signal ***
+[node009:347621] Signal: Segmentation fault (11)
+[node009:347621] Signal code:  (-6)
+[node009:347621] Failing at address: 0xff77600054de5
+[node010:4010965] *** Process received signal ***
+[node010:4010965] Signal: Segmentation fault (11)
+[node010:4010965] Signal code:  (-6)
+[node010:4010965] Failing at address: 0xff776003d33d5
+[node009:347621] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x145dac6a3b30]
+[node010:4010965] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14ce71a11b30]
+[node009:347621] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x145dadc493b6]
+[node009:347621] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010968] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14bca8286b30]
+[node010:4010968] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14bca982c3b6]
+[node009:347621] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x145dad3c64a3]
+[node009:347621] [ 4] stencil_alltoallw[0x40106e]
+[node009:347621] *** End of error message ***
+[node010:4010965] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14ce72fb73b6]
+[node010:4010965] [ 2] stencil_alltoallw[0x401a64]
+==== backtrace (tid: 347620) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+==== backtrace (tid:4010967) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347623) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node010:4010968] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010968] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14bca8fa94a3]
+[node010:4010968] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010968] *** End of error message ***
+=================================
+[node010:4010965] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14ce727344a3]
+[node010:4010965] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010965] *** End of error message ***
+=================================
+[node010:4010967] *** Process received signal ***
+[node010:4010967] Signal: Segmentation fault (11)
+[node010:4010967] Signal code:  (-6)
+[node010:4010967] Failing at address: 0xff776003d33d7
+[node009:347620] *** Process received signal ***
+[node009:347620] Signal: Segmentation fault (11)
+[node009:347620] Signal code:  (-6)
+[node009:347620] Failing at address: 0xff77600054de4
+[node009:347623] *** Process received signal ***
+[node009:347623] Signal: Segmentation fault (11)
+[node009:347623] Signal code:  (-6)
+srun: error: node009: tasks 1-2: Segmentation fault (core dumped)
+[node009:347623] Failing at address: 0xff77600054de7
+[node009:347620] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1535b503cb30]
+[node010:4010967] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14d8bb67ab30]
+[node010:4010967] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14d8bcc203b6]
+[node010:4010967] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010967] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14d8bc39d4a3]
+[node010:4010967] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010967] *** End of error message ***
+[node009:347623] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x150c61ad7b30]
+[node010:4010949:0:4010949] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347620] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1535b65e23b6]
+==== backtrace (tid:4010970) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+[node009:347623] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x150c6307d3b6]
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010970] *** Process received signal ***
+[node009:347620] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010970] Signal: Segmentation fault (11)
+[node010:4010970] Signal code:  (-6)
+[node010:4010970] Failing at address: 0xff776003d33da
+[node009:347623] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010970] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14784e14eb30]
+[node009:347620] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1535b5d5f4a3]
+[node009:347620] [ 4] stencil_alltoallw[0x40106e]
+[node009:347620] *** End of error message ***
+[node010:4010970] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14784f6f43b6]
+[node009:347623] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x150c627fa4a3]
+[node010:4010970] [ 2] stencil_alltoallw[0x401a64]
+[node009:347623] [ 4] stencil_alltoallw[0x40106e]
+[node009:347623] *** End of error message ***
+[node010:4010970] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14784ee714a3]
+==== backtrace (tid: 347625) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010970] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010970] *** End of error message ***
+[node009:347625] *** Process received signal ***
+[node009:347625] Signal: Segmentation fault (11)
+[node009:347625] Signal code:  (-6)
+[node009:347625] Failing at address: 0xff77600054de9
+==== backtrace (tid:4010969) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347625] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1502f54a5b30]
+[node010:4010969] *** Process received signal ***
+[node010:4010969] Signal: Segmentation fault (11)
+[node010:4010969] Signal code:  (-6)
+[node010:4010969] Failing at address: 0xff776003d33d9
+[node010:4010969] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14e0871e9b30]
+[node009:347625] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1502f6a4b3b6]
+[node009:347625] [ 2] stencil_alltoallw[0x401a64]
+[node009:347625] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1502f61c84a3]
+[node009:347625] [ 4] stencil_alltoallw[0x40106e]
+[node009:347625] *** End of error message ***
+[node010:4010969] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14e08878f3b6]
+[node010:4010969] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010969] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14e087f0c4a3]
+[node010:4010969] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010969] *** End of error message ***
+==== backtrace (tid: 347626) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node010:4010979:0:4010979] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000011)
+=================================
+==== backtrace (tid:4010971) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+==== backtrace (tid: 347624) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+=================================
+[node009:347626] *** Process received signal ***
+[node009:347626] Signal: Segmentation fault (11)
+[node009:347626] Signal code:  (-6)
+[node009:347626] Failing at address: 0xff77600054dea
+==== backtrace (tid:4010972) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+==== backtrace (tid: 347627) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node010:4010971] *** Process received signal ***
+[node010:4010971] Signal: Segmentation fault (11)
+[node010:4010971] Signal code:  (-6)
+[node010:4010971] Failing at address: 0xff776003d33db
+[node009:347624] *** Process received signal ***
+[node009:347624] Signal: Segmentation fault (11)
+[node009:347624] Signal code:  (-6)
+[node009:347624] Failing at address: 0xff77600054de8
+=================================
+=================================
+[node010:4010972] *** Process received signal ***
+[node010:4010972] Signal: Segmentation fault (11)
+[node010:4010972] Signal code:  (-6)
+[node010:4010972] Failing at address: 0xff776003d33dc
+[node009:347627] *** Process received signal ***
+[node009:347627] Signal: Segmentation fault (11)
+[node009:347627] Signal code:  (-6)
+[node009:347627] Failing at address: 0xff77600054deb
+==== backtrace (tid:4010962) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347626] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1495898efb30]
+=================================
+[node009:347626] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14958ae953b6]
+[node009:347626] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010962] *** Process received signal ***
+[node010:4010962] Signal: Segmentation fault (11)
+[node010:4010962] Signal code:  (-6)
+[node010:4010962] Failing at address: 0xff776003d33d2
+[node009:347626] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14958a6124a3]
+[node009:347626] [ 4] stencil_alltoallw[0x40106e]
+[node009:347626] *** End of error message ***
+[node010:4010971] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x149101451b30]
+[node009:347624] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x148cb0ef7b30]
+[node010:4010972] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1494dc090b30]
+[node010:4010972] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1494dd6363b6]
+[node009:347624] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x148cb249d3b6]
+[node010:4010971] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1491029f73b6]
+[node009:347624] [ 2] stencil_alltoallw[0x401a64]
+[node009:347624] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x148cb1c1a4a3]
+[node010:4010971] [ 2] stencil_alltoallw[0x401a64]
+[node009:347627] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14f639d51b30]
+[node009:347627] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14f63b2f73b6]
+[node010:4010972] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010972] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1494dcdb34a3]
+[node009:347624] [ 4] stencil_alltoallw[0x40106e]
+[node009:347624] *** End of error message ***
+[node010:4010971] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1491021744a3]
+[node009:347627] [ 2] stencil_alltoallw[0x401a64]
+[node009:347627] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14f63aa744a3]
+[node010:4010962] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14b194c1db30]
+[node009:347627] [ 4] stencil_alltoallw[0x40106e]
+[node009:347627] *** End of error message ***
+[node010:4010971] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010971] *** End of error message ***
+==== backtrace (tid: 347622) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+[node010:4010972] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010972] *** End of error message ***
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347622] *** Process received signal ***
+[node010:4010962] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14b1961c33b6]
+[node010:4010962] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010962] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14b1959404a3]
+[node009:347622] Signal: Segmentation fault (11)
+[node009:347622] Signal code:  (-6)
+[node009:347622] Failing at address: 0xff77600054de6
+[node010:4010962] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010962] *** End of error message ***
+[node009:347622] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14e1231f7b30]
+==== backtrace (tid:4010966) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347622] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14e12479d3b6]
+[node009:347622] [ 2] stencil_alltoallw[0x401a64]
+=================================
+[node009:347622] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14e123f1a4a3]
+[node009:347622] [ 4] stencil_alltoallw[0x40106e]
+[node009:347622] *** End of error message ***
+[node010:4010966] *** Process received signal ***
+[node010:4010966] Signal: Segmentation fault (11)
+[node010:4010966] Signal code:  (-6)
+[node010:4010966] Failing at address: 0xff776003d33d6
+==== backtrace (tid: 347597) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010966] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14e441e87b30]
+[node009:347597] *** Process received signal ***
+[node009:347597] Signal: Segmentation fault (11)
+[node009:347597] Signal code:  (-6)
+[node009:347597] Failing at address: 0xff77600054dcd
+[node010:4010966] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14e44342d3b6]
+[node010:4010966] [ 2] stencil_alltoallw[0x401a64]
+[node009:347597] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x146643d5bb30]
+[node010:4010966] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14e442baa4a3]
+[node010:4010966] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010966] *** End of error message ***
+[node009:347597] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1466453013b6]
+==== backtrace (tid:4010977) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+[node009:347597] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347597] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x146644a7e4a3]
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347597] [ 4] stencil_alltoallw[0x40106e]
+[node009:347597] *** End of error message ***
+=================================
+[node010:4010977] *** Process received signal ***
+[node010:4010977] Signal: Segmentation fault (11)
+[node010:4010977] Signal code:  (-6)
+[node010:4010977] Failing at address: 0xff776003d33e1
+==== backtrace (tid:4010976) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+[node009:347607:0:347607] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+==== backtrace (tid: 347628) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+=================================
+[node009:347628] *** Process received signal ***
+[node009:347628] Signal: Segmentation fault (11)
+[node009:347628] Signal code:  (-6)
+[node009:347628] Failing at address: 0xff77600054dec
+[node010:4010976] *** Process received signal ***
+[node010:4010976] Signal: Segmentation fault (11)
+[node010:4010976] Signal code:  (-6)
+[node010:4010976] Failing at address: 0xff776003d33e0
+[node009:347628] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x154f5d107b30]
+[node010:4010977] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14906f25fb30]
+[node009:347628] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x154f5e6ad3b6]
+[node009:347628] [ 2] stencil_alltoallw[0x401a64]
+[node009:347628] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x154f5de2a4a3]
+[node009:347628] [ 4] stencil_alltoallw[0x40106e]
+[node009:347628] *** End of error message ***
+[node010:4010976] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x155105b28b30]
+[node010:4010977] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1490708053b6]
+[node010:4010977] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010976] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1551070ce3b6]
+[node010:4010976] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010977] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14906ff824a3]
+[node010:4010977] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010977] *** End of error message ***
+[node010:4010976] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x15510684b4a3]
+[node010:4010976] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010976] *** End of error message ***
+==== backtrace (tid:4010975) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010975] *** Process received signal ***
+[node010:4010975] Signal: Segmentation fault (11)
+[node010:4010975] Signal code:  (-6)
+[node010:4010975] Failing at address: 0xff776003d33df
+[node010:4010975] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x152a681a1b30]
+[node010:4010975] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x152a697473b6]
+[node010:4010975] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010975] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x152a68ec44a3]
+[node010:4010975] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010975] *** End of error message ***
+==== backtrace (tid:4010949) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+==== backtrace (tid: 347607) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010949] *** Process received signal ***
+[node010:4010949] Signal: Segmentation fault (11)
+[node010:4010949] Signal code:  (-6)
+[node010:4010949] Failing at address: 0xff776003d33c5
+[node009:347607] *** Process received signal ***
+[node009:347607] Signal: Segmentation fault (11)
+[node009:347607] Signal code:  (-6)
+[node009:347607] Failing at address: 0xff77600054dd7
+[node010:4010949] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1537bf93fb30]
+[node009:347607] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14a4d0ca7b30]
+[node010:4010949] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1537c0ee53b6]
+[node010:4010949] [ 2] stencil_alltoallw[0x401a64]
+[node009:347607] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14a4d224d3b6]
+[node009:347607] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010949] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1537c06624a3]
+[node010:4010949] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010949] *** End of error message ***
+[node009:347607] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14a4d19ca4a3]
+[node009:347607] [ 4] stencil_alltoallw[0x40106e]
+[node009:347607] *** End of error message ***
+==== backtrace (tid:4010980) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010980] *** Process received signal ***
+[node010:4010980] Signal: Segmentation fault (11)
+[node010:4010980] Signal code:  (-6)
+[node010:4010980] Failing at address: 0xff776003d33e4
+[node010:4010980] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14585e473b30]
+[node010:4010980] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14585fa193b6]
+[node010:4010980] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010980] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14585f1964a3]
+[node010:4010980] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010980] *** End of error message ***
+[node009:347606:0:347606] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010979) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010979] *** Process received signal ***
+[node010:4010979] Signal: Segmentation fault (11)
+[node010:4010979] Signal code:  (-6)
+[node010:4010979] Failing at address: 0xff776003d33e3
+[node010:4010979] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x151ed07f4b30]
+[node010:4010979] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x151ed1d9a3b6]
+[node010:4010979] [ 2] stencil_alltoallw[0x401a64]
+[node009:347617:0:347617] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010979] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x151ed15174a3]
+[node010:4010979] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010979] *** End of error message ***
+==== backtrace (tid: 347617) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347617] *** Process received signal ***
+[node009:347617] Signal: Segmentation fault (11)
+[node009:347617] Signal code:  (-6)
+[node009:347617] Failing at address: 0xff77600054de1
+[node009:347617] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14baa83e5b30]
+[node009:347617] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14baa998b3b6]
+[node009:347617] [ 2] stencil_alltoallw[0x401a64]
+[node009:347617] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14baa91084a3]
+[node009:347617] [ 4] stencil_alltoallw[0x40106e]
+[node009:347617] *** End of error message ***
+==== backtrace (tid: 347606) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347606] *** Process received signal ***
+[node009:347606] Signal: Segmentation fault (11)
+[node009:347606] Signal code:  (-6)
+[node009:347606] Failing at address: 0xff77600054dd6
+[node009:347606] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x152cea956b30]
+[node009:347606] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x152cebefc3b6]
+[node009:347606] [ 2] stencil_alltoallw[0x401a64]
+[node009:347606] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x152ceb6794a3]
+[node009:347606] [ 4] stencil_alltoallw[0x40106e]
+[node009:347606] *** End of error message ***
+[node010:4010960:0:4010960] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010960) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347600:0:347600] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+=================================
+[node010:4010960] *** Process received signal ***
+[node010:4010960] Signal: Segmentation fault (11)
+[node010:4010960] Signal code:  (-6)
+[node010:4010960] Failing at address: 0xff776003d33d0
+[node010:4010960] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x151a0d477b30]
+[node010:4010960] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x151a0ea1d3b6]
+[node010:4010960] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010960] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x151a0e19a4a3]
+[node010:4010960] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010960] *** End of error message ***
+[node010:4010978:0:4010978] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid:4010978) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node010:4010978] *** Process received signal ***
+[node010:4010978] Signal: Segmentation fault (11)
+[node010:4010978] Signal code:  (-6)
+[node010:4010978] Failing at address: 0xff776003d33e2
+[node010:4010978] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x154cbd691b30]
+[node010:4010978] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x154cbec373b6]
+[node010:4010978] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010978] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x154cbe3b44a3]
+[node010:4010978] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010978] *** End of error message ***
+==== backtrace (tid: 347600) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347600] *** Process received signal ***
+[node009:347600] Signal: Segmentation fault (11)
+[node009:347600] Signal code:  (-6)
+[node009:347600] Failing at address: 0xff77600054dd0
+[node009:347600] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x1495c9bf7b30]
+[node009:347600] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1495cb19d3b6]
+[node009:347600] [ 2] stencil_alltoallw[0x401ac1]
+[node010:4010974:0:4010974] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347600] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x1495ca91a4a3]
+[node009:347600] [ 4] stencil_alltoallw[0x40106e]
+[node009:347600] *** End of error message ***
+==== backtrace (tid:4010974) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347599:0:347599] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+=================================
+[node010:4010974] *** Process received signal ***
+[node010:4010974] Signal: Segmentation fault (11)
+[node010:4010974] Signal code:  (-6)
+[node010:4010974] Failing at address: 0xff776003d33de
+[node010:4010974] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14c4fcd5ab30]
+[node009:347598:0:347598] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node010:4010974] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14c4fe3003b6]
+[node010:4010974] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010974] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14c4fda7d4a3]
+[node010:4010974] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010974] *** End of error message ***
+==== backtrace (tid: 347599) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347599] *** Process received signal ***
+[node009:347599] Signal: Segmentation fault (11)
+[node009:347599] Signal code:  (-6)
+[node009:347599] Failing at address: 0xff77600054dcf
+[node009:347599] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14a52c381b30]
+[node009:347599] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14a52d9273b6]
+[node009:347599] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347599] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14a52d0a44a3]
+[node009:347599] [ 4] stencil_alltoallw[0x40106e]
+[node009:347599] *** End of error message ***
+==== backtrace (tid: 347598) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347598] *** Process received signal ***
+[node009:347598] Signal: Segmentation fault (11)
+[node009:347598] Signal code:  (-6)
+[node009:347598] Failing at address: 0xff77600054dce
+[node009:347598] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x154a4825bb30]
+[node010:4010955:0:4010955] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+[node009:347598] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x154a498013b6]
+[node009:347598] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347598] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x154a48f7e4a3]
+[node009:347598] [ 4] stencil_alltoallw[0x40106e]
+[node009:347598] *** End of error message ***
+[node009:347602:0:347602] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347602) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347602] *** Process received signal ***
+[node009:347602] Signal: Segmentation fault (11)
+[node009:347602] Signal code:  (-6)
+[node009:347602] Failing at address: 0xff77600054dd2
+[node009:347602] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x14a324c3cb30]
+==== backtrace (tid:4010955) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+[node009:347602] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x14a3261e23b6]
+[node009:347602] [ 2] stencil_alltoallw[0x401ac1]
+=================================
+[node009:347602] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x14a32595f4a3]
+[node009:347602] [ 4] stencil_alltoallw[0x40106e]
+[node009:347602] *** End of error message ***
+[node010:4010955] *** Process received signal ***
+[node010:4010955] Signal: Segmentation fault (11)
+[node010:4010955] Signal code:  (-6)
+[node010:4010955] Failing at address: 0xff776003d33cb
+[node010:4010955] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x150d2dbffb30]
+[node010:4010955] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x150d2f1a53b6]
+[node010:4010955] [ 2] stencil_alltoallw[0x401a64]
+[node010:4010955] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x150d2e9224a3]
+[node010:4010955] [ 4] stencil_alltoallw[0x40106e]
+[node010:4010955] *** End of error message ***
+[node009:347612:0:347612] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347612) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401a64 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:160
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347612] *** Process received signal ***
+[node009:347612] Signal: Segmentation fault (11)
+[node009:347612] Signal code:  (-6)
+[node009:347612] Failing at address: 0xff77600054ddc
+[node009:347612] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x149ed3373b30]
+[node009:347612] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x149ed49193b6]
+[node009:347612] [ 2] stencil_alltoallw[0x401a64]
+[node009:347612] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x149ed40964a3]
+[node009:347612] [ 4] stencil_alltoallw[0x40106e]
+[node009:347612] *** End of error message ***
+[node009:347601:0:347601] Caught signal 11 (Segmentation fault: address not mapped to object at address 0x800000010)
+==== backtrace (tid: 347601) ====
+ 0 0x00000000000201f3 ucs_debug_print_backtrace()  /dev/shm/easybuild/UCX/1.9.0/GCCcore-10.2.0/ucx-1.9.0/src/ucs/debug/debug.c:656
+ 1 0x0000000000012b30 .annobin_sigaction.c()  sigaction.c:0
+ 2 0x00000000000663b6 MPI_Alltoallw()  ???:0
+ 3 0x0000000000401ac1 main()  /homedtic/u199149/lab2_T1G12/4_stencil/stencil_alltoallw.c:163
+ 4 0x00000000000234a3 __libc_start_main()  ???:0
+ 5 0x000000000040106e _start()  ???:0
+=================================
+[node009:347601] *** Process received signal ***
+[node009:347601] Signal: Segmentation fault (11)
+[node009:347601] Signal code:  (-6)
+[node009:347601] Failing at address: 0xff77600054dd1
+[node009:347601] [ 0] /lib64/libpthread.so.0(+0x12b30)[0x15400815eb30]
+[node009:347601] [ 1] /soft/easybuild/x86_64/software/OpenMPI/4.1.2-GCC-10.2.0-with-slurm/lib/libmpi.so.40(PMPI_Alltoallw+0x116)[0x1540097043b6]
+[node009:347601] [ 2] stencil_alltoallw[0x401ac1]
+[node009:347601] [ 3] /lib64/libc.so.6(__libc_start_main+0xf3)[0x154008e814a3]
+[node009:347601] [ 4] stencil_alltoallw[0x40106e]
+[node009:347601] *** End of error message ***
