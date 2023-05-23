@@ -160,7 +160,7 @@ int main(int argc, char **argv)
 		PERF_COMM_BEGIN();
 
 		/* COMMUNICATION */
-		MPI_Alltoallw(aold, send_counts, sdispls, types, anew, recv_counts, rdispls, types, MPI_COMM_WORLD);
+		MPI_Alltoallw(aold, send_counts, sdispls, types, aold, recv_counts, rdispls, types, MPI_COMM_WORLD);
 
 		PERF_COMM_END();
 
