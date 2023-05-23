@@ -36,15 +36,7 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	MPI_Comm_size (MPI_COMM_WORLD, &nprocs);
 
 	/* Create datatype */
-
-	// TODO: BASTA CON MPI_CONTIGUOUS O SE TIENE QUE HACER CON STRUCT??
-	int count = 4;
-	int blocklens[] = {1, 1, 1, 1};
-	MPI_Aint lowerbound, extent;
-	MPI_Type_get_extent(MPI_INT, &lowerbound, &extent);
-	MPI_Aint offsets[] = {0, extent, 2*extent, 3*extent};
-	MPI_Datatype oldtypes[] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT};
-	MPI_Type_create_struct(count, blocklens, offsets, oldtypes, &rectype);
+	MPI_Type_contiguous(4, MPI_INT, &rectype);
 	MPI_Type_commit(&rectype);
 
 	/* Each process reads a part of the file */
@@ -54,9 +46,9 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	MPI_File_get_size(infile, &filesize);
 	filenumrecords = filesize / sizeof(tRecord);
 
-	if(filenumrecords % nprocs != 0) return 1; // just in case
+	if(filenumrecords % nprocs != 0) return 1; // Filenumrecords should be divisible by nprocs
+	numrecords = filenumrecords / nprocs;
 
-	numrecords = filenumrecords / nprocs; // hope that it is divisible
 	MPI_File_seek(infile, numrecords*rank*sizeof(tRecord), MPI_SEEK_SET);
 
 	/* Allocate buffer for records */
@@ -67,6 +59,7 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	MPI_File_close(&infile);
 
 	/* Count results by each process */
+	// Initialize all to 0
 	for(i=0; i<MAX_QUEST; i++) {
 		yes[i] = 0;
 		no[i] = 0;
@@ -86,16 +79,17 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 	for(i=0; i<MAX_QUEST; i++) total += yes[i] + no[i];
 
 	/* Print local results */
-	for(i = 0; i < nprocs; i++) {
+	for(i = 0; i < nprocs; i++) { // Print the local results in order
 		if (rank == i) {
-			printf("Proc %3d. Counted votes = %d\n", i, total); // print other totals
+			printf("Proc %3d. Counted votes = %d\n", i, total);
 			fflush(stdout); // FLUSH BUFFER AFTER PRINT 
 		}
 		MPI_Barrier(MPI_COMM_WORLD);
 	}
-	// fflush(stdout);
+	
 	/* Print global results on process 0 */
-	MPI_Barrier(MPI_COMM_WORLD); // TODO: WHY IT DOES NOT PRINT IN THE CORRECT ORDER!!!
+	// Probably this barrier is not needed
+	MPI_Barrier(MPI_COMM_WORLD); // DOES NOT ALWAYS PRINT IN THE CORRECT ORDER, UNKNOWN FIX
 	MPI_Reduce(&yes, &totYes, MAX_QUEST, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&no, &totNo, MAX_QUEST, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
 
