@@ -12,11 +12,11 @@
 #include "perf_stat.h"
 
 /* row-major order */
-#define ind(i,j, bx) ((j)*(bx+2)+(i))
+#define ind(i,j) ((j)*(bx+2)+(i))
 
 int ind_f(int i, int j, int bx)
 {
-	return ind(i, j, bx);
+	return ind(i, j);
 }
 
 void setup(int rank, int proc, int argc, char **argv,
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
 	int *send_counts, *recv_counts;
 	int *sdispls, *rdispls;
-	MPI_Datatype typeNS, typeEW;
+	MPI_Datatype *types, typeNS, typeEW;
 
 	int iter, i;
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 	offx = rx * bx;
 	offy = ry * by;
 
-	printf("%i (%i,%i) - w: %i, e: %i, n: %i, s: %i\n", rank, ry, rx, west, east, north, south);
+	// printf("%i (%i,%i) - w: %i, e: %i, n: %i, s: %i\n", rank, ry, rx, west, east, north, south);
 
 	/* initialize three heat sources */
 	init_sources(bx, by, offx, offy, n, nsources, sources, &locnsources, locsources);
@@ -109,65 +109,39 @@ int main(int argc, char **argv)
 	send_counts = (int*) malloc(size*sizeof(int));
 	rdispls = (int*) malloc(size*sizeof(int));
 	sdispls = (int*) malloc(size*sizeof(int));
-	/*
-	for (i = 0; i < size; i++) {
-		if(i == north) {
-			send_counts[i] = bx;
-			sdispls[i] = ind_f(rx*bx, ry*by, bx) * sizeof(double); // (first col, first row) of block
-			rdispls[i] = ind_f(rx*bx, ry*by-1, bx) * sizeof(double); // north halo (first row-1, first col)
-		}
-		else if(i == south) {
-			send_counts[i] = bx;
-			sdispls[i] = ind_f(rx*bx, ry*by+by, bx) * sizeof(double); // (first col, last row) of block
-			rdispls[i] = ind_f(rx*bx, ry*by+by+1, bx) * sizeof(double); // south halo (first col, last row+1)
-		}
-		else if(i == west) {
-			send_counts[i] = by;
-			sdispls[i] = ind_f(rx*bx, ry*by, bx) * sizeof(double); // (first col, first row) of block
-			rdispls[i] = ind_f(rx*bx-1, ry*by, bx) * sizeof(double); // west halo (first col-1, first row)
-		}
-		else if(i == east) {
-			send_counts[i] = by;
-			sdispls[i] = ind_f(rx*bx+bx, ry*by, bx) * sizeof(double); // (last col, first row) of block
-			rdispls[i] = ind_f(rx*bx+bx+1, ry*by, bx) * sizeof(double); // east halo (last col+1, first row)
-		}
-		else {
-			send_counts[i] = 0;
-			sdispls[i] = 0;
-			rdispls[i] = 0;
-		}
-		// printf("R%d---%i count=%d sdis=%d rdis=%d\n", rank, i, send_counts[i], sdispls[i], rdispls[i]);
-	}
-	*/
+	types = (MPI_Datatype*) malloc(size*sizeof(MPI_Datatype));
 
 	for (i = 0; i < size; i++) {
 		if(i == north) {
-			send_counts[i] = 1; // SOLO ENVIAS UNO DE CADA TIPO CREO 
-			// CREO QUE CADA PROCESO SOLO TIENE EN SU AOLD Y ANEW SU PARTE DEL ARRAY, ASI QUE ES COMO LOCAL NO SE SI ME EXPLICO
+			send_counts[i] = 1;
 			sdispls[i] = ind_f(1, 1, bx) * sizeof(double); // (first col, first row) of block
 			rdispls[i] = ind_f(1, 0, bx) * sizeof(double); // north halo (first col, first row-1) of block
+			types[i] = typeNS;
 		}
 		else if(i == south) {
 			send_counts[i] = 1;
 			sdispls[i] = ind_f(1, by, bx) * sizeof(double); // (first col, last row) of block
 			rdispls[i] = ind_f(1, by+1, bx) * sizeof(double); // south halo (first col, last row+1) of block
+			types[i] = typeNS;
 		}
 		else if(i == west) {
 			send_counts[i] = 1;
 			sdispls[i] = ind_f(1, 1, bx) * sizeof(double); // (first col, first row) of block
 			rdispls[i] = ind_f(0, 1, bx) * sizeof(double); // west halo (first col-1, first row) of block
+			types[i] = typeEW;
 		}
 		else if(i == east) {
 			send_counts[i] = 1;
 			sdispls[i] = ind_f(bx, 1, bx) * sizeof(double); // (last col, first row) of block
 			rdispls[i] = ind_f(bx+1, 1, bx) * sizeof(double); // east halo (last col+1, first row) of block
+			types[i] = typeEW;
 		}
 		else {
 			send_counts[i] = 0;
 			sdispls[i] = 0;
 			rdispls[i] = 0;
+			types[i] = typeNS; // does not send anything
 		}
-		printf("R%d---%i count=%d sdis=%d rdis=%d\n", rank, i, send_counts[i], sdispls[i], rdispls[i]);
 	}
 	
 	/* use different count parameters because some MPI implementations do not consider displacements
@@ -179,21 +153,14 @@ int main(int argc, char **argv)
 		/* refresh heat sources */
 		PERF_COMP_BEGIN();
 		for (i = 0; i < locnsources; ++i) {
-			aold[ind_f(locsources[i][0], locsources[i][1], bx)] += energy;    /* heat source */
+			aold[ind(locsources[i][0], locsources[i][1])] += energy;    /* heat source */
 		}
 		PERF_COMP_END();
 
 		PERF_COMM_BEGIN();
-		/* COMMUNICATION */ // MPI PROCESS NULL if neighbor is -1
-		// NO SE SI EL ALLTOALL SE HACE ASI
-		for(i=0; i<size; i++) {
-			if(i == north || i == south) {
-				MPI_Alltoallw(aold, send_counts, sdispls, &typeNS, anew, recv_counts, rdispls, &typeNS, MPI_COMM_WORLD);
-			}
-			if(i == east || i == west) {
-				MPI_Alltoallw(aold, send_counts, sdispls, &typeEW, anew, recv_counts, rdispls, &typeEW, MPI_COMM_WORLD);
-			}
-		}
+
+		/* COMMUNICATION */
+		MPI_Alltoallw(aold, send_counts, sdispls, types, anew, recv_counts, rdispls, types, MPI_COMM_WORLD);
 
 		PERF_COMM_END();
 
@@ -221,10 +188,11 @@ int main(int argc, char **argv)
 	free(recv_counts);
 	free(rdispls);
 	free(sdispls);
+	free(types);
 
 	/* get final heat in the system */
 
-	rheat = heat; // NO LO SE
+	MPI_Reduce(&heat, &rheat, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	if (!rank) {
 		printf("[%i] last heat: %f \n", rank, rheat);
@@ -328,10 +296,10 @@ void update_grid(int bx, int by, double *aold, double *anew, double *heat_ptr)
 
 	for (i = 1; i < bx + 1; ++i) {
 		for (j = 1; j < by + 1; ++j) {
-			anew[ind_f(i, j, bx)] =
-				anew[ind_f(i, j, bx)] / 2.0 + (aold[ind_f(i - 1, j, bx)] + aold[ind_f(i + 1, j, bx)] +
-										 aold[ind_f(i, j - 1, bx)] + aold[ind_f(i, j + 1, bx)]) / 4.0 / 2.0;
-			heat += anew[ind_f(i, j, bx)];
+			anew[ind(i, j)] =
+				anew[ind(i, j)] / 2.0 + (aold[ind(i - 1, j)] + aold[ind(i + 1, j)] +
+										 aold[ind(i, j - 1)] + aold[ind(i, j + 1)]) / 4.0 / 2.0;
+			heat += anew[ind(i, j)];
 		}
 	}
 
