@@ -101,6 +101,11 @@ int inside_triangle(struct Triangle * t, struct Point * p) {
 	}
 }
 
+/* Checks if p2 is in a square of size 5 around p1*/
+int inside_square(struct Point *p1, struct Point *p2) {
+	return (p2->x >= p1->x-2 || p2->x <= p1->x+2) && (p2->y >= p1->y-2 || p2->y <= p1->y+2);
+}
+
 /* Helper function to save an image */   
 void save_image(char *filename, int width, int height, double *image){
 
@@ -139,12 +144,47 @@ void count_close_points(struct Point* points, int num_points) {
 /* Function to calculate the Delaunay Triangulation of a set of points */
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-
+	int count;
+	struct Triangle local;
+	for(int i=0; i<num_points-2; i++) {
+		for(int j=i+1; j<num_points-1; j++) {
+			for(int k=j+1; k<num_points; k++) {
+				local.p1 = points[i];
+				local.p2 = points[j];
+				local.p3 = points[k];
+				count = 0;
+				for(int l=0; l<num_points; l++) {
+					count += (int) inside_triangle(&triangles[*num_triangles], &points[l]);
+				}
+				if(count == 3) {
+					triangles[*num_triangles] = local;
+					*num_triangles++;
+				}
+			}
+		}
+	}
 }
 
 /* Function to store an image of int's between 0 and 100, where points store -1, and empty areas -2, and points inside triangle the average value */
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
-
+	double* image = (double*) malloc(width*height*sizeof(double));
+	struct Point pixel;
+	double alpha, beta, gamma;
+	for(int j=0; j<height; j++) {
+		for(int i=0;i<width; i++) {
+			pixel.x = i;
+			pixel.y = j;
+			for(int k=0; k<num_triangles; k++) if (!inside_triangle(&triangles[k], &pixel)) image[pixel(i, j, width)] = -1;
+			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101;
+			for(int k=0; k<num_triangles; k++) {
+				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+				if (alpha >= 0 && beta >= 0 && gamma >= 0) {
+					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+				}
+			}
+		}
+	}
+	
 	//write image
 	save_image("image.txt", width, height, image);
 	
