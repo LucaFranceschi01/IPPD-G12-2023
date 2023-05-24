@@ -16,10 +16,10 @@ typedef struct {
 }  tRecord;
 
 /* Main program */
-int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
+int main (int argc, char **argv)
 {
 	int rank, nprocs;
-	int recordsize, filenumrecords, rem, numrecords;
+	int recordsize, filenumrecords, rem, numrecords; // rem unused
 	int i, quest;
 	tRecord *buf;
 	long total, yes[MAX_QUEST], totYes[MAX_QUEST];
@@ -44,15 +44,17 @@ int main (int argc, char **argv) // TODO: CLEANUP NON-USED VARIABLES
 
 	/* Each process determines number of records to read and initial offset */
 	MPI_File_get_size(infile, &filesize);
-	filenumrecords = filesize / sizeof(tRecord);
+	recordsize = sizeof(tRecord);
+	filenumrecords = filesize / recordsize;
 
 	if(filenumrecords % nprocs != 0) return 1; // Filenumrecords should be divisible by nprocs
 	numrecords = filenumrecords / nprocs;
 
-	MPI_File_seek(infile, numrecords*rank*sizeof(tRecord), MPI_SEEK_SET);
+	poffset = numrecords*rank*recordsize;
+	MPI_File_seek(infile, poffset, MPI_SEEK_SET);
 
 	/* Allocate buffer for records */
-	buf = (tRecord*) malloc(sizeof(tRecord)*numrecords);
+	buf = (tRecord*) malloc(recordsize*numrecords);
 
 	/* Process reads numrecords consecutive elements */
 	MPI_File_read(infile, buf, numrecords, rectype, &info);

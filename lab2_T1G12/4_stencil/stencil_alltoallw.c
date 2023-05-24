@@ -36,8 +36,8 @@ int main(int argc, char **argv)
 	int rank, size;
 	int n, energy, niters, px, py;
 
-	int rx, ry; // QUESTION: P=processes / R=rank cartesian / B=blocksize / OFF=offset
-	int north = -1, south = -1, west = -1, east = -1; // ranks of neighbours if any to NULL
+	int rx, ry;
+	int north = -1, south = -1, west = -1, east = -1; // ranks of neighbours init to -1 and modified if exists
 	int bx, by, offx, offy;
 
 	/* three heat sources */
