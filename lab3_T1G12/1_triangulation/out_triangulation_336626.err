@@ -1,0 +1,4 @@
+Wrong number of paramethers
+Usage:
+	delaunay N W H (for N points in a WxH map)
+srun: error: node002: task 0: Exited with exit code 255
