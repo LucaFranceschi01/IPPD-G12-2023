@@ -1,7 +1,0 @@
-a ver un par de cosas que repuntar:
-
-stencil speedup: para el 1, 4 y 9 no es nada eficiente asi que he tenido que poner mas tiempo
-
-para el 256 he tenido que poner 8 nodes para ejecutarlo
-
-para el 9 he usado grid size 4095 ya que es divisible por 3 y parecido a 4096

@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 
 	/* determine my coordinates (x,y) -- rank=x*a+y in the 2d processor array */
 	rx = rank % px;
-	ry = rank / py; // Integer division truncates result
+	ry = rank / px; // Integer division truncates result
 
 	/* determine my four neighbors */
 	if ((rank - px) >= 0) north = rank - px;
