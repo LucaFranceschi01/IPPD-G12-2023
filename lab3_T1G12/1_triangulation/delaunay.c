@@ -6,6 +6,8 @@
 #include <time.h>
 #include <unistd.h>
 
+// #include <openacc.h>
+
 #define pixel(i, j, w)  (((j)*(w)) +(i))
 #define abs(a) (a<0)*(-1)*a + (a>=0)*a
 
@@ -145,6 +147,20 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 		}
 	}
 	// for(int i=0; i<num_points; i++) printf("value[%d]=%.2f\n", i, points[i].value);
+	// #pragma acc data copy(points[0:num_points])
+	// {
+		// #pragma acc parallel loop collapse(2)
+		// for(int i=0; i<num_points; i++) {
+			// for(int j=i+1; j<num_points; j++) {
+				// if (distance(&points[i], &points[j]) < 100.f) {
+					// #pragma acc atomic
+					// points[i].value++;
+					// #pragma acc atomic
+					// points[j].value++;
+				// }
+			// }
+		// }
+	// }
 }
 
 /* Function to calculate the Delaunay Triangulation of a set of points */
@@ -152,6 +168,7 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 	/* Iterate over every possible triangle defined by three points */
 	int count;
 	struct Triangle local;
+	// #pragma acc parallel loop collapse(3) present(points[0:num_points], triangles[0:*num_triangles])
 	for(int i=0; i<num_points-2; i++) {
 		for(int j=i+1; j<num_points-1; j++) {
 			for(int k=j+1; k<num_points; k++) { // loops should be correct
@@ -159,6 +176,7 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 				local.p2 = points[j];
 				local.p3 = points[k];
 				count = 0;
+				// #pragma acc loop reduction(+:count)
 				for(int l=0; l<num_points; l++) {
 					count += inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
 				}
@@ -182,20 +200,18 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 		for(int i=0;i<width; i++) {
 			pixel.x = i;
 			pixel.y = j;
-			// for(int k=0; k<num_triangles; k++) {
-			// 	if (!inside_triangle(&triangles[k], &pixel)) image[pixel(i, j, width)] = -1;
-			// }
-			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = -1;
-			// for(int k=0; k<num_triangles; k++) {
-			// 	barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
-			// 	if (alpha >= 0 && beta >= 0 && gamma >= 0 && alpha+beta+gamma == 1.f) {
-			// 		// printf("alpha=%f\tbeta=%f\tgamma=%f\n", alpha, beta, gamma);
-			// 		image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
-			// 	}
-			// }
+			for(int k=0; k<num_triangles; k++) image[pixel(i, j, width)] = -1.0;
+			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101.0;
+			for(int k=0; k<num_triangles; k++) {
+				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+				if (alpha > 0 && beta > 0 && gamma > 0) {
+				// printf("alpha=%f\tbeta=%f\tgamma=%f\n", alpha, beta, gamma);
+					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+				}
+			}
 		}
 	}
-	for(int k=0; k<num_triangles; k++) printf("p1.x=%f\tp1.y=%f\np2.x=%f\tp2.y=%f\np3.x=%f\tp3.y=%f\n\n", triangles[k].p1.x, triangles[k].p1.y, triangles[k].p2.x, triangles[k].p2.y, triangles[k].p3.x, triangles[k].p3.y);
+	// for(int k=0; k<num_triangles; k++) printf("p1.x=%f\tp1.y=%f\np2.x=%f\tp2.y=%f\np3.x=%f\tp3.y=%f\n\n", triangles[k].p1.x, triangles[k].p1.y, triangles[k].p2.x, triangles[k].p2.y, triangles[k].p3.x, triangles[k].p3.y);
 	
 	//write image
 	save_image("image.txt", width, height, image);
