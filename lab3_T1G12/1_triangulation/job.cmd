@@ -8,10 +8,10 @@
 #SBATCH --sockets-per-node=1
 #SBATCH --cores-per-socket=1
 #SBATCH --threads-per-core=1
-#SBATCH --time=00:00:30
+#SBATCH --time=00:10:00
 
 module load GCC/10.2.0
 
 make >> make.out || exit 1      # Exit if make fails
 
-srun delaunay
+srun delaunay 100 1024 1024

@@ -2,8 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 #define pixel(i, j, w)  (((j)*(w)) +(i))
+#define abs(a) (a<0)*(-1)*a + (a>=0)*a
 
 /* A point in 2D space */
 struct Point {
@@ -103,7 +107,7 @@ int inside_triangle(struct Triangle * t, struct Point * p) {
 
 /* Checks if p2 is in a square of size 5 around p1*/
 int inside_square(struct Point *p1, struct Point *p2) {
-	return (p2->x >= p1->x-2 || p2->x <= p1->x+2) && (p2->y >= p1->y-2 || p2->y <= p1->y+2);
+	return (abs((p1->x - p2->x)) <= 2.5 && abs((p1->y - p2->y)) <= 2.5);
 }
 
 /* Helper function to save an image */   
@@ -121,6 +125,7 @@ void save_image(char *filename, int width, int height, double *image){
 
 /* helper function to initialize the points */
 void init_points(struct Point* points, int num_points, int width, int height) {
+	srand(time(NULL));
 	for(int i = 0; i < num_points; i++) {
 		points[i].x =  ((double) rand() / RAND_MAX)*width;
 		points[i].y =  ((double) rand() / RAND_MAX)*height;
@@ -130,15 +135,16 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 }
 
 /*Function to count how many points you have close (dist<100)*/
-void count_close_points(struct Point* points, int num_points) {
+void count_close_points(struct Point* points, int num_points) { // should be correct
 	for(int i=0; i<num_points; i++) {
 		for(int j=i+1; j<num_points; j++) {
-			if (distance(&points[i], &points[j]) < 100) {
+			if (distance(&points[i], &points[j]) < 100.f) {
 				points[i].value++;
 				points[j].value++;
 			}
 		}
 	}
+	// for(int i=0; i<num_points; i++) printf("value[%d]=%.2f\n", i, points[i].value);
 }
 
 /* Function to calculate the Delaunay Triangulation of a set of points */
@@ -148,17 +154,17 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 	struct Triangle local;
 	for(int i=0; i<num_points-2; i++) {
 		for(int j=i+1; j<num_points-1; j++) {
-			for(int k=j+1; k<num_points; k++) {
+			for(int k=j+1; k<num_points; k++) { // loops should be correct
 				local.p1 = points[i];
 				local.p2 = points[j];
 				local.p3 = points[k];
 				count = 0;
 				for(int l=0; l<num_points; l++) {
-					count += (int) inside_triangle(&triangles[*num_triangles], &points[l]);
+					count += inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
 				}
-				if(count == 3) {
+				if(count == 0) {
 					triangles[*num_triangles] = local;
-					*num_triangles++;
+					(*num_triangles)++;
 				}
 			}
 		}
@@ -168,28 +174,36 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 /* Function to store an image of int's between 0 and 100, where points store -1, and empty areas -2, and points inside triangle the average value */
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
 	double* image = (double*) malloc(width*height*sizeof(double));
+	// double* image2 = (double*) malloc(width*height*sizeof(double));
+
 	struct Point pixel;
 	double alpha, beta, gamma;
 	for(int j=0; j<height; j++) {
 		for(int i=0;i<width; i++) {
 			pixel.x = i;
 			pixel.y = j;
-			for(int k=0; k<num_triangles; k++) if (!inside_triangle(&triangles[k], &pixel)) image[pixel(i, j, width)] = -1;
-			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101;
-			for(int k=0; k<num_triangles; k++) {
-				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
-				if (alpha >= 0 && beta >= 0 && gamma >= 0) {
-					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
-				}
-			}
+			// for(int k=0; k<num_triangles; k++) {
+			// 	if (!inside_triangle(&triangles[k], &pixel)) image[pixel(i, j, width)] = -1;
+			// }
+			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = -1;
+			// for(int k=0; k<num_triangles; k++) {
+			// 	barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+			// 	if (alpha >= 0 && beta >= 0 && gamma >= 0 && alpha+beta+gamma == 1.f) {
+			// 		// printf("alpha=%f\tbeta=%f\tgamma=%f\n", alpha, beta, gamma);
+			// 		image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+			// 	}
+			// }
 		}
 	}
+	for(int k=0; k<num_triangles; k++) printf("p1.x=%f\tp1.y=%f\np2.x=%f\tp2.y=%f\np3.x=%f\tp3.y=%f\n\n", triangles[k].p1.x, triangles[k].p1.y, triangles[k].p2.x, triangles[k].p2.y, triangles[k].p3.x, triangles[k].p3.y);
 	
 	//write image
 	save_image("image.txt", width, height, image);
+	// save_image("image2.txt", width, height, image2);
 	
 	//free memory
 	free(image);
+	// free(image2);
 }
 
 int delaunay(int num_points, int width, int height) {
