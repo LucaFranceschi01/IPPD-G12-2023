@@ -11,5 +11,5 @@ print(num_max)
 cmap = plt.cm.jet
 cmap.set_under('white')
 cmap.set_over('black')
-plt.imshow(img, cmap=cmap, vmin=0, vmax=num_max )
+plt.imshow(img, cmap=cmap, vmin=-0.5, vmax=num_max )
 plt.show()
