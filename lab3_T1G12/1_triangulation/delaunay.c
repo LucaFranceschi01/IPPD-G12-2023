@@ -98,7 +98,7 @@ int inside_triangle(struct Triangle * t, struct Point * p) {
 	double alpha, beta, gamma;
 	barycentric_coordinates(t, p, &alpha, &beta, &gamma); 
 	// Check if the barycentric coordinates are positive and add up to 1
-	if (alpha >= 0 && beta >= 0 && gamma >= 0) {
+	if (alpha > 0 && beta > 0 && gamma > 0) {
 		return 1;
 	} else {
 		return 0;
