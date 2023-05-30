@@ -138,7 +138,7 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 /*Function to count how many points you have close (dist<100)*/
 void count_close_points(struct Point* points, int num_points) { // should be correct
 	for(int i=0; i<num_points; i++) {
-		// #pragma acc parallel loop
+		#pragma acc parallel loop copy(points[i:num_points-i])
 		for(int j=i+1; j<num_points; j++) {
 			if (distance(&points[i], &points[j]) < 100.f) {
 				points[i].value++;
@@ -151,23 +151,25 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 /* Function to calculate the Delaunay Triangulation of a set of points */
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-	int count;
+	int count = 0;
 	struct Triangle local;
-	for(int i=0; i<num_points-2; i++) {
-		for(int j=i+1; j<num_points-1; j++) {
-			// #pragma acc parallel loop
-			for(int k=j+1; k<num_points; k++) { // loops should be correct
-				local.p1 = points[i];
-				local.p2 = points[j];
-				local.p3 = points[k];
-				count = 0;
-				// #pragma acc loop reduction(+:count)
-				for(int l=0; l<num_points; l++) {
-					count += inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
-				}
-				if(count == 0) {
-					triangles[*num_triangles] = local;
-					(*num_triangles)++;
+	// #pragma acc data copyin(points[0:num_points], local) copy(triangles[0:sizeof(triangles)/sizeof(&triangles)])
+	{
+		for(int i=0; i<num_points-2; i++) {
+			for(int j=i+1; j<num_points-1; j++) {
+				// #pragma acc parallel loop private(count)
+				for(int k=j+1; k<num_points; k++) { // loops should be correct
+					local.p1 = points[i];
+					local.p2 = points[j];
+					local.p3 = points[k];
+					count = 0;
+					for(int l=0; l<num_points; l++) {
+						count = count + inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
+					}
+					if(count == 0) {
+						triangles[*num_triangles] = local;
+						(*num_triangles)++;
+					}
 				}
 			}
 		}
@@ -181,6 +183,7 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 
 	struct Point pixel;
 	double alpha, beta, gamma;
+	// #pragma acc parallel loop collapse(2) copyin(pixel) copy(image[0:height][0:width])
 	for(int j=0; j<height; j++) {
 		for(int i=0;i<width; i++) {
 			pixel.x = i;
@@ -200,11 +203,9 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 	
 	//write image
 	save_image("image.txt", width, height, image);
-	// save_image("image2.txt", width, height, image2);
 	
 	//free memory
 	free(image);
-	// free(image2);
 }
 
 int delaunay(int num_points, int width, int height) {
