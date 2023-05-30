@@ -127,7 +127,6 @@ void save_image(char *filename, int width, int height, double *image){
 
 /* helper function to initialize the points */
 void init_points(struct Point* points, int num_points, int width, int height) {
-	srand(time(NULL));
 	for(int i = 0; i < num_points; i++) {
 		points[i].x =  ((double) rand() / RAND_MAX)*width;
 		points[i].y =  ((double) rand() / RAND_MAX)*height;
@@ -139,6 +138,7 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 /*Function to count how many points you have close (dist<100)*/
 void count_close_points(struct Point* points, int num_points) { // should be correct
 	for(int i=0; i<num_points; i++) {
+		// #pragma acc parallel loop
 		for(int j=i+1; j<num_points; j++) {
 			if (distance(&points[i], &points[j]) < 100.f) {
 				points[i].value++;
@@ -146,21 +146,6 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 			}
 		}
 	}
-	// for(int i=0; i<num_points; i++) printf("value[%d]=%.2f\n", i, points[i].value);
-	// #pragma acc data copy(points[0:num_points])
-	// {
-		// #pragma acc parallel loop collapse(2)
-		// for(int i=0; i<num_points; i++) {
-			// for(int j=i+1; j<num_points; j++) {
-				// if (distance(&points[i], &points[j]) < 100.f) {
-					// #pragma acc atomic
-					// points[i].value++;
-					// #pragma acc atomic
-					// points[j].value++;
-				// }
-			// }
-		// }
-	// }
 }
 
 /* Function to calculate the Delaunay Triangulation of a set of points */
@@ -168,9 +153,9 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 	/* Iterate over every possible triangle defined by three points */
 	int count;
 	struct Triangle local;
-	// #pragma acc parallel loop collapse(3) present(points[0:num_points], triangles[0:*num_triangles])
 	for(int i=0; i<num_points-2; i++) {
 		for(int j=i+1; j<num_points-1; j++) {
+			// #pragma acc parallel loop
 			for(int k=j+1; k<num_points; k++) { // loops should be correct
 				local.p1 = points[i];
 				local.p2 = points[j];
@@ -201,7 +186,6 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 			pixel.x = i;
 			pixel.y = j;
 			for(int k=0; k<num_triangles; k++) image[pixel(i, j, width)] = -1.0;
-			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101.0;
 			for(int k=0; k<num_triangles; k++) {
 				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
 				if (alpha > 0 && beta > 0 && gamma > 0) {
@@ -209,6 +193,7 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
 				}
 			}
+			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101.0;
 		}
 	}
 	// for(int k=0; k<num_triangles; k++) printf("p1.x=%f\tp1.y=%f\np2.x=%f\tp2.y=%f\np3.x=%f\tp3.y=%f\n\n", triangles[k].p1.x, triangles[k].p1.y, triangles[k].p2.x, triangles[k].p2.y, triangles[k].p3.x, triangles[k].p3.y);

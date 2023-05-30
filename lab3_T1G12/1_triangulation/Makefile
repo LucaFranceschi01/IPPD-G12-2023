@@ -1,10 +1,13 @@
-CC=gcc
-CFLAGS=-O2 -lm -std=c99 -fopenmp
+CC=pgcc
+CFLAGS=-fast -Minfo=accel
 OBJ=delaunay
 
 
-all:
-	$(CC) main.c $(OBJ).c -o $(OBJ) $(CFLAGS)
+gpu:
+	$(CC) main.c $(OBJ).c -ta=tesla:managed -o $(OBJ) $(CFLAGS)
+
+cpu:
+	$(CC) main.c $(OBJ).c -ta=multicore -o $(OBJ) $(CFLAGS)
 
 clean:
 	rm $(OBJ)

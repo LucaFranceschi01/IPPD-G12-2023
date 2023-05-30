@@ -1,17 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=ex1
-#SBATCH -p ippd-cpu
+#SBATCH -p ippd-gpu
 #SBATCH --output=out_triangulation_%j.out
 #SBATCH --error=out_triangulation_%j.err
 #SBATCH --ntasks=1
-#SBATCH --nodes=1
-#SBATCH --sockets-per-node=1
-#SBATCH --cores-per-socket=1
-#SBATCH --threads-per-core=1
-#SBATCH --time=00:10:00
+#SBATCH --gres=gpu:1
+#SBATCH --time=00:05:00
 
-module load GCC/10.2.0
+module load NVHPC/21.9-CUDA-11.4.3
 
-make >> make.out || exit 1      # Exit if make fails
+make cpu >> make.out || exit 1      # Exit if make fails
+srun delaunay 1024 1024 1024
 
-srun delaunay 100 1024 1024
+make gpu >> make.out || exit 1      # Exit if make fails
+srun delaunay 1024 1024 1024
