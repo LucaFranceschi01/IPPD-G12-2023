@@ -154,23 +154,27 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 /* Function to calculate the Delaunay Triangulation of a set of points */
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
+	int count;
 	struct Triangle local;
-	// #pragma acc data copyin(points[0:num_points]) create(local) copy(triangles[0:sizeof(triangles)/sizeof(&triangles)], *num_triangles)
+	#pragma acc data copyin(points[0:num_points], local, count) copy(triangles[0:num_points*30], num_triangles)
 	{
 		for(int i=0; i<num_points-2; i++) {
 			for(int j=i+1; j<num_points-1; j++) {
-				// #pragma acc parallel loop reduction(+:count)
+				#pragma acc parallel loop reduction(+:count)
 				for(int k=j+1; k<num_points; k++) { // loops should be correct
 					local.p1 = points[i];
 					local.p2 = points[j];
 					local.p3 = points[k];
-					int count = 0;
-					for(int l=0; l<num_points; l++) { // WHY IMPLICIT REDUCTION !!!
+					count = 0;
+					for(int l=0; l<num_points; l++) {
 						count += inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
 					}
 					if(count == 0) {
-						triangles[*num_triangles] = local;
-						(*num_triangles)++;
+						#pragma acc atomic capture
+						{
+							triangles[*num_triangles] = local;
+							(*num_triangles)++;
+						}
 					}
 				}
 			}
