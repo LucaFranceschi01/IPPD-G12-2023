@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 // #include <openacc.h>
 
@@ -140,7 +141,7 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 	// #pragma acc  data copy(points[0:num_points])
 	// {
 	for(int i=0; i<num_points; i++) {
-		#pragma acc parallel loop copy(points[i:num_points-i])
+		// #pragma acc parallel loop copy(points[i:num_points-i])
 		for(int j=i+1; j<num_points; j++) {
 			if (distance(&points[i], &points[j]) < 100.f) {
 				points[i].value++;
@@ -154,58 +155,66 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 /* Function to calculate the Delaunay Triangulation of a set of points */
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-	int count;
+	bool flag = false;
 	struct Triangle local;
-	#pragma acc data copyin(points[0:num_points], local, count) copy(triangles[0:num_points*30], num_triangles)
-	{
+	// #pragma acc data copyin(points[0:num_points], local, count) copy(triangles[0:num_points*30], num_triangles)
+	// {
 		for(int i=0; i<num_points-2; i++) {
 			for(int j=i+1; j<num_points-1; j++) {
-				#pragma acc parallel loop reduction(+:count)
+				// #pragma acc parallel loop reduction(+:count)
 				for(int k=j+1; k<num_points; k++) {
+					flag = false;
 					local.p1 = points[i];
 					local.p2 = points[j];
 					local.p3 = points[k];
-					count = 0;
-					for(int l=0; l<num_points; l++) {
-						count += inside_circle(&points[l], &local); // IF POINT BELONGS TO TRIANGLE RETURNS 0
-					}
-					if(count == 0) {
-						#pragma acc atomic capture
-						{
-							int index = (*num_triangles)++;
-							triangles[index-1] = local; // este menos es para ocupar la primera posicion
+
+					for(int l=0; l<num_points; l++)	{
+						if(inside_circle(&points[l], &local)) {
+							flag = true;
+							break;
 						}
+					}
+
+					if(!flag) {
+						// #pragma acc atomic capture
+						// {
+							int index = (*num_triangles)++;
+							triangles[index] = local; // este menos es para ocupar la primera posicion
+						// }
 					}
 				}
 			}
 		}
-	}
+	// }
 }
 
 /* Function to store an image of int's between 0 and 100, where points store -1, and empty areas -2, and points inside triangle the average value */
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
 	double* image = (double*) malloc(width*height*sizeof(double));
-	// double* image2 = (double*) malloc(width*height*sizeof(double));
 
 	struct Point pixel;
 	double alpha, beta, gamma;
 	// #pragma acc parallel loop collapse(2) copyin(pixel) copy(image[0:height][0:width])
-	for(int j=0; j<height; j++) {
-		for(int i=0;i<width; i++) {
+	for(int i=0;i<width; i++) {
+		for(int j=0; j<height; j++) {
 			pixel.x = i;
 			pixel.y = j;
-			for(int k=0; k<num_triangles; k++) image[pixel(i, j, width)] = -1.0;
+			image[pixel(i, j, width)] = -1.0;
 			for(int k=0; k<num_triangles; k++) {
 				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
 				if (alpha > 0 && beta > 0 && gamma > 0) {
-				// printf("alpha=%f\tbeta=%f\tgamma=%f\n", alpha, beta, gamma);
 					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+					break;
 				}
 			}
-			for(int k=0; k<num_points; k++) if(inside_square(&points[k], &pixel)) image[pixel(i, j, width)] = 101.0;
+			for(int k=0; k<num_points; k++) {
+				if(inside_square(&points[k], &pixel)) {
+					image[pixel(i, j, width)] = 101.0;
+					break;
+				}
+			}
 		}
 	}
-	// for(int k=0; k<num_triangles; k++) printf("p1.x=%f\tp1.y=%f\np2.x=%f\tp2.y=%f\np3.x=%f\tp3.y=%f\n\n", triangles[k].p1.x, triangles[k].p1.y, triangles[k].p2.x, triangles[k].p2.y, triangles[k].p3.x, triangles[k].p3.y);
 	
 	//write image
 	save_image("image.txt", width, height, image);
