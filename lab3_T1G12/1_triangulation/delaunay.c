@@ -161,7 +161,7 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 		for(int i=0; i<num_points-2; i++) {
 			for(int j=i+1; j<num_points-1; j++) {
 				#pragma acc parallel loop reduction(+:count)
-				for(int k=j+1; k<num_points; k++) { // loops should be correct
+				for(int k=j+1; k<num_points; k++) {
 					local.p1 = points[i];
 					local.p2 = points[j];
 					local.p3 = points[k];
@@ -172,7 +172,7 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 					if(count == 0) {
 						#pragma acc atomic capture
 						{
-							int index = (*num_triangles)++; // sergi laut
+							int index = (*num_triangles)++;
 							triangles[index-1] = local; // este menos es para ocupar la primera posicion
 						}
 					}
