@@ -172,8 +172,8 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 					if(count == 0) {
 						#pragma acc atomic capture
 						{
-							triangles[*num_triangles] = local;
-							(*num_triangles)++;
+							int index = (*num_triangles)++; // sergi laut
+							triangles[index-1] = local; // este menos es para ocupar la primera posicion
 						}
 					}
 				}
