@@ -138,18 +138,18 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 
 /*Function to count how many points you have close (dist<100)*/
 void count_close_points(struct Point* points, int num_points) { // should be correct
-	// #pragma acc  data copy(points[0:num_points])
-	// {
+	#pragma acc parallel loop copy(points[0:num_points])
 	for(int i=0; i<num_points; i++) {
-		// #pragma acc parallel loop copy(points[i:num_points-i])
+		#pragma acc loop
 		for(int j=i+1; j<num_points; j++) {
 			if (distance(&points[i], &points[j]) < 100.f) {
+				#pragma acc atomic update
 				points[i].value++;
+				#pragma acc atomic update
 				points[j].value++;
 			}
 		}
 	}
-	// }
 }
 
 /* Function to calculate the Delaunay Triangulation of a set of points */
