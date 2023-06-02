@@ -155,37 +155,35 @@ void count_close_points(struct Point* points, int num_points) { // should be cor
 /* Function to calculate the Delaunay Triangulation of a set of points */
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-	bool flag = false;
-	struct Triangle local;
-	// #pragma acc data copyin(points[0:num_points], local, count) copy(triangles[0:num_points*30], num_triangles)
-	// {
-		for(int i=0; i<num_points-2; i++) {
-			for(int j=i+1; j<num_points-1; j++) {
-				// #pragma acc parallel loop reduction(+:count)
-				for(int k=j+1; k<num_points; k++) {
-					flag = false;
-					local.p1 = points[i];
-					local.p2 = points[j];
-					local.p3 = points[k];
-
-					for(int l=0; l<num_points; l++)	{
-						if(inside_circle(&points[l], &local)) {
-							flag = true;
-							break;
-						}
+	#pragma acc parallel loop copyin(points[0:num_points]) copy(triangles[0:num_points*30], num_triangles)
+	for(int i=0; i<num_points-2; i++) {
+		#pragma acc loop
+		for(int j=i+1; j<num_points-1; j++) {
+			#pragma acc loop
+			for(int k=j+1; k<num_points; k++) {
+				struct Triangle local;
+				bool flag = false;
+				local.p1 = points[i];
+				local.p2 = points[j];
+				local.p3 = points[k];
+				
+				for(int l=0; l<num_points; l++)	{
+					if(inside_circle(&points[l], &local)) {
+						flag = true;
+						break;
 					}
+				}
 
-					if(!flag) {
-						// #pragma acc atomic capture
-						// {
-							int index = (*num_triangles)++;
-							triangles[index] = local; // este menos es para ocupar la primera posicion
-						// }
+				if(!flag) {
+					#pragma acc atomic capture
+					{
+						int index = (*num_triangles)++;
+						triangles[index] = local;
 					}
 				}
 			}
 		}
-	// }
+	}
 }
 
 /* Function to store an image of int's between 0 and 100, where points store -1, and empty areas -2, and points inside triangle the average value */
