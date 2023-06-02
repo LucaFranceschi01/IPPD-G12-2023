@@ -167,12 +167,14 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 				local.p2 = points[j];
 				local.p3 = points[k];
 				
+				// #pragma acc loop // use brackets because of break
 				for(int l=0; l<num_points; l++)	{
 					if(inside_circle(&points[l], &local)) {
 						flag = true;
 						break;
 					}
 				}
+				// no noticeable improvement
 
 				if(!flag) {
 					#pragma acc atomic capture
@@ -190,14 +192,17 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
 	double* image = (double*) malloc(width*height*sizeof(double));
 
-	struct Point pixel;
-	double alpha, beta, gamma;
-	// #pragma acc parallel loop collapse(2) copyin(pixel) copy(image[0:height][0:width])
+	#pragma acc parallel loop collapse(2) copyin(points[0:num_points]) copy(image[0:height][0:width])
 	for(int i=0;i<width; i++) {
 		for(int j=0; j<height; j++) {
+			struct Point pixel;
+			double alpha, beta, gamma;
+
 			pixel.x = i;
 			pixel.y = j;
 			image[pixel(i, j, width)] = -1.0;
+
+			// #pragma acc loop // use brackets because of break
 			for(int k=0; k<num_triangles; k++) {
 				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
 				if (alpha > 0 && beta > 0 && gamma > 0) {
@@ -205,12 +210,16 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 					break;
 				}
 			}
+			// no noticeable improvement
+			
+			// #pragma acc loop // use brackets because of break
 			for(int k=0; k<num_points; k++) {
 				if(inside_square(&points[k], &pixel)) {
 					image[pixel(i, j, width)] = 101.0;
 					break;
 				}
 			}
+			// no noticeable improvement
 		}
 	}
 	
