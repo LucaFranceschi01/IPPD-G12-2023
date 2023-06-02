@@ -9,8 +9,8 @@
 
 module load NVHPC/21.9-CUDA-11.4.3
 
-#make cpu >> make.out || exit 1      # Exit if make fails
-#srun delaunay 500 1024 1024
+make cpu >> make.out || exit 1      # Exit if make fails
+srun delaunay 1024 1024 1024
 
 make gpu >> make.out || exit 1      # Exit if make fails
-srun delaunay 500 1024 1024
+srun delaunay 1024 1024 1024
