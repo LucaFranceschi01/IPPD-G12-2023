@@ -137,7 +137,7 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 }
 
 /*Function to count how many points you have close (dist<100)*/
-void count_close_points(struct Point* points, int num_points) { // should be correct
+void count_close_points(struct Point* points, int num_points) {
 	#pragma acc parallel loop copy(points[0:num_points])
 	for(int i=0; i<num_points; i++) {
 		#pragma acc loop
