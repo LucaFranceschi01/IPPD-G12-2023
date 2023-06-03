@@ -1,0 +1,12 @@
+Delaunay triangulation for 5000 points in a map with resolution 2000x1500
+Maximum allowed number of triangles = 150000
+Counting close points: 0.308438
+Delanuay triangulation: 1410.803548
+Number of generated triangles = 9978
+Generate image: 141.548730
+Delaunay triangulation for 5000 points in a map with resolution 2000x1500
+Maximum allowed number of triangles = 150000
+Counting close points: 0.002313
+Delanuay triangulation: 40.386647
+Number of generated triangles = 9978
+Generate image: 5.617891

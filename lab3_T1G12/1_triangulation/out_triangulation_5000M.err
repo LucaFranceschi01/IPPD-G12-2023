@@ -1,0 +1,71 @@
+main.c:
+delaunay.c:
+count_close_points:
+    140, Generating Multicore code
+        142, #pragma acc loop gang
+    144, Loop is parallelizable
+delaunay_triangulation:
+    156, Generating Multicore code
+        159, #pragma acc loop gang
+    161, Loop is parallelizable
+    163, Loop is parallelizable
+save_triangulation_image:
+    193, Generating Multicore code
+        196, #pragma acc loop gang
+    197, Accelerator restriction: size of the GPU copy of triangles is unknown
+    206, Scalar last value needed after loop for alpha at line 209
+         Scalar last value needed after loop for gamma at line 209
+         Scalar last value needed after loop for beta at line 209
+         207, Accelerator restriction: induction variable live-out from loop: k
+    212, Accelerator restriction: induction variable live-out from loop: k
+main.c:
+delaunay.c:
+distance:
+     40, Generating implicit acc routine seq
+         Generating acc routine seq
+         Generating Tesla code
+is_ccw:
+     47, Generating implicit acc routine seq
+         Generating acc routine seq
+         Generating Tesla code
+inside_circle:
+     58, Generating implicit acc routine seq
+         Generating acc routine seq
+         Generating Tesla code
+barycentric_coordinates:
+     83, Generating implicit acc routine seq
+         Generating acc routine seq
+         Generating Tesla code
+inside_square:
+    112, Generating implicit acc routine seq
+         Generating acc routine seq
+         Generating Tesla code
+count_close_points:
+    140, Generating copy(points[:num_points]) [if not already present]
+         Generating Tesla code
+        142, #pragma acc loop gang /* blockIdx.x */
+        144, #pragma acc loop vector(128) /* threadIdx.x */
+    144, Loop is parallelizable
+delaunay_triangulation:
+    156, Generating copy(num_triangles[:1],triangles[:num_points*30]) [if not already present]
+         Generating copyin(points[:num_points]) [if not already present]
+         Generating Tesla code
+        159, #pragma acc loop gang /* blockIdx.x */
+        161, #pragma acc loop seq
+        163, #pragma acc loop vector(128) /* threadIdx.x */
+    156, Local memory used for local
+    161, Loop is parallelizable
+    163, Loop is parallelizable
+save_triangulation_image:
+    193, Generating copy(image[:width]) [if not already present]
+         Generating Tesla code
+        196, #pragma acc loop gang, vector(128) collapse(2) /* blockIdx.x threadIdx.x */
+        197,   /* blockIdx.x threadIdx.x collapsed */
+    193, Local memory used for pixel
+         Generating implicit copyin(triangles[:]) [if not already present]
+         Generating copyin(points[:num_points]) [if not already present]
+    206, Scalar last value needed after loop for alpha at line 209
+         Scalar last value needed after loop for beta at line 209
+         Scalar last value needed after loop for gamma at line 209
+         207, Accelerator restriction: induction variable live-out from loop: k
+    212, Accelerator restriction: induction variable live-out from loop: k
