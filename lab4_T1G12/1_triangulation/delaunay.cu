@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cuda.h>
-#include <omp.h>
 
 #define pixel(i, j, w)  (((j)*(w)) +(i))
+#define TPB 128 // THREADS PER BLOCK needs testing
 
 int max_num_triangles;
 
@@ -137,19 +137,16 @@ void init_points(struct Point* points, int num_points, int width, int height) {
     }
 }
 
-__global__ void count_close_points(struct Point* points, int *num_points) { // should be correct
+__global__ void count_close_points(struct Point* points, int *num_points) {
 	double dist;
-	for(int i=0; i<*num_points; i++) {
-		for(int j=i+1; j<*num_points; j++) {
-			distance(&points[i], &points[j], &dist);
-			if (dist < 100.f) {
-				// sync these two
-				points[i].value++;
-				points[j].value++;
-			}
+
+	int idx = threadIdx.x + blockIdx.x * blockDim.x;
+	for(int j = 0; j<*num_points; j++) {
+		distance(&points[idx], &points[j], &dist);
+		if (dist < 100.f) {
+			points[idx].value++;
 		}
 	}
-	// warp = 32 threads
 }
 
 
@@ -157,15 +154,17 @@ __global__ void count_close_points(struct Point* points, int *num_points) { // s
 void count_close_points_gpu(struct Point* points, int num_points) {
 	int *d_num_points;
 	struct Point* d_points;
-	size_t size = num_points * sizeof(d_points);
+	size_t size = num_points * sizeof(struct Point);
 
 	cudaMalloc((void**) &d_points, size);
-	cudaMalloc((void**) &d_num_points, sizeof(int*));
+	cudaMalloc((void**) &d_num_points, sizeof(int));
 
 	cudaMemcpy(d_points, points, size, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_num_points, &num_points, sizeof(int*), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_num_points, &num_points, sizeof(int), cudaMemcpyHostToDevice);
 
-	count_close_points<<<1, 1>>>(d_points, d_num_points);
+	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
+	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
+	count_close_points<<<dimGrid, dimBlock>>>(d_points, d_num_points);
 
 	cudaMemcpy(points, d_points, size, cudaMemcpyDeviceToHost);
 	cudaFree(d_points); cudaFree(d_num_points);
@@ -231,7 +230,7 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 			for(int k=0; k<num_points; k++) {
 				inside_square(&points[k], &pixel, &inside);
 				if(inside) {
-					image[pixel(i, j, width)] = 101.0;
+					image[pixel(i, j, width)] = 101.f;
 					break;
 				}
 			}
@@ -279,7 +278,7 @@ extern "C" int delaunay(int num_points, int width, int height) {
 	cudaEventCreate(&start);
 	cudaEventCreate(&end);
 
-    int max_num_triangles = num_points*30;
+    max_num_triangles = num_points*30;
     struct Point * points = (struct Point *) malloc(sizeof(struct Point)*num_points);
     struct Triangle * triangles = (struct Triangle *) malloc(sizeof(struct Triangle)*max_num_triangles);
     printf("Maximum allowed number of triangles = %d\n", num_points*30);

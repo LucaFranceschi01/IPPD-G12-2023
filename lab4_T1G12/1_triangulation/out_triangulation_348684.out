@@ -1,9 +1,0 @@
-Delaunay triangulation for 1024 points in a map with resolution 1024x1024
-
-------------------------------------------------------------------
-Maximum grid size is: (2147483647, 65535, 65535, )
-Maximum block dim is: (1024, 1024, 64, )
-Max threads per block: 1024
-------------------------------------------------------------------
-
-Maximum allowed number of triangles = 30720

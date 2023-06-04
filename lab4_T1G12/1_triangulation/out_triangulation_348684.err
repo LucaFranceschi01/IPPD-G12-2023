@@ -1,5 +1,0 @@
-delaunay.cu(60): warning: variable "clockwise" is used before its value is set
-
-delaunay.cu(60): warning: variable "clockwise" is used before its value is set
-
-srun: error: node031: task 0: Segmentation fault (core dumped)
