@@ -56,8 +56,8 @@ __host__ void inside_circle(struct Point * p, struct Triangle * t, int* ret) {
 //det = | bx-dx, by-dy, (bx-dx)² + (by-dy)² |
 //      | cx-dx, cy-dy, (cx-dx)² + (cy-dy)² |
 
-    int* clockwise;
-	is_ccw(t, clockwise);
+    int clockwise;
+	is_ccw(t, &clockwise);
     
     double ax = (*t).p1.x - (*p).x;
     double ay = (*t).p1.y - (*p).y;
@@ -71,9 +71,11 @@ __host__ void inside_circle(struct Point * p, struct Triangle * t, int* ret) {
             (bx*bx + by*by) * (ax*cy-cx*ay) +
             (cx*cx + cy*cy) * (ax*by-bx*ay);
     
-    if(*clockwise)
+    if(clockwise) {
         *ret = det > 0;
-    *ret = det<0;
+	} else {
+    	*ret = det < 0;
+	}
 }
 
 //* Helper function to compute barycentric coordintaes of a point respect a triangle */
@@ -130,26 +132,22 @@ void init_points(struct Point* points, int num_points, int width, int height) {
     for(int i = 0; i < num_points; i++) {
         points[i].x =  ((double) rand() / RAND_MAX)*width;
         points[i].y =  ((double) rand() / RAND_MAX)*height;
-        points[i].value = 0;//(rand() % 10000) / 100.;
+        points[i].value = 0.f;//(rand() % 10000) / 100.;
         //printf("Point %d [%f,%f]=%f\n", i, points[i].x, points[i].y, points[i].value);
     }
 }
 
 __global__ void count_close_points(struct Point* points, int *num_points) { // should be correct
-	double* dist;
+	double dist;
 	for(int i=0; i<*num_points; i++) {
 		for(int j=i+1; j<*num_points; j++) {
-			distance(&points[i], &points[j], dist);
-			if (*dist < 100.f) {
+			distance(&points[i], &points[j], &dist);
+			if (dist < 100.f) {
 				// sync these two
 				points[i].value++;
 				points[j].value++;
 			}
 		}
-		# if __CUDA_ARCH__>=200
-    		printf("%d \n", i);
-
-		#endif
 	}
 	// warp = 32 threads
 }
@@ -175,7 +173,7 @@ void count_close_points_gpu(struct Point* points, int num_points) {
 
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-	int *inside;
+	int inside;
 	for(int i=0; i<num_points-2; i++) {
 		for(int j=i+1; j<num_points-1; j++) {
 			for(int k=j+1; k<num_points; k++) {
@@ -186,8 +184,8 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 				local.p3 = points[k];
 				
 				for(int l=0; l<num_points; l++)	{
-					inside_circle(&points[l], &local, inside);
-					if(*inside) {
+					inside_circle(&points[l], &local, &inside);
+					if(inside) {
 						flag = true;
 						break;
 					}
@@ -212,7 +210,7 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 }
 
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
-	int* inside;
+	int inside;
 	for(int i=0;i<width; i++) {
 		for(int j=0; j<height; j++) {
 			struct Point pixel;
@@ -231,8 +229,8 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 			}
 			
 			for(int k=0; k<num_points; k++) {
-				inside_square(&points[k], &pixel, inside);
-				if(*inside) {
+				inside_square(&points[k], &pixel, &inside);
+				if(inside) {
 					image[pixel(i, j, width)] = 101.0;
 					break;
 				}
@@ -276,42 +274,42 @@ void printCudaInfo() {
 extern "C" int delaunay(int num_points, int width, int height) {
     printCudaInfo();
     
-    float time = 0;
+    float time = 0.f;
 	cudaEvent_t start, end;
 	cudaEventCreate(&start);
 	cudaEventCreate(&end);
 
-    max_num_triangles = num_points*30;
+    int max_num_triangles = num_points*30;
     struct Point * points = (struct Point *) malloc(sizeof(struct Point)*num_points);
     struct Triangle * triangles = (struct Triangle *) malloc(sizeof(struct Triangle)*max_num_triangles);
     printf("Maximum allowed number of triangles = %d\n", num_points*30);
     
     init_points(points, num_points, width, height);
-	printf("puff\n");
+    printf("Points initialized\n");
 
     cudaEventRecord(start);
     count_close_points_gpu(points, num_points);
 	cudaEventRecord(end);
-	// cudaEventSynchronize(end);
+	cudaEventSynchronize(end);
     cudaEventElapsedTime(&time, start, end);
-    printf("Counting close points: %f\n", time);
+    printf("Counting close points: %f\n", time/1000.f);
 
     int num_triangles = 0;
     cudaEventRecord(start);
     delaunay_triangulation_gpu(points, num_points, triangles, &num_triangles);
     cudaEventRecord(end);
-	// cudaEventSynchronize(end);
+	cudaEventSynchronize(end);
     cudaEventElapsedTime(&time, start, end);
-    printf("Delaunay triangulation: %f\n", time);
+    printf("Delaunay triangulation: %f\n", time/1000.f);
 
     printf("Number of generated triangles = %d\n", num_triangles);
 
     cudaEventRecord(start);
     save_triangulation_image_gpu(points, num_points, triangles, num_triangles, width, height);
 	cudaEventRecord(end);
-	// cudaEventSynchronize(end);
+	cudaEventSynchronize(end);
     cudaEventElapsedTime(&time, start, end);
-    printf("Generate image: %f\n", time);
+    printf("Generate image: %f\n", time/1000.f);
 
     //Free memory
     free(points);
