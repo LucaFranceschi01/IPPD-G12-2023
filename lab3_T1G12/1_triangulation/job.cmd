@@ -5,7 +5,7 @@
 #SBATCH --error=out_triangulation_%j.err
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --time=00:20:00
+#SBATCH --time=00:01:00
 
 module load NVHPC/21.9-CUDA-11.4.3
 
