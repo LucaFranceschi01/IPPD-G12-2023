@@ -137,40 +137,39 @@ void init_points(struct Point* points, int num_points, int width, int height) {
     }
 }
 
-__global__ void count_close_points(struct Point* points, int *num_points) {
-	double dist;
-
+__global__ void count_close_points(struct Point* points, int num_points) {
 	int idx = threadIdx.x + blockIdx.x * blockDim.x;
-	int idy = threadIdx.y + blockIdx.y * blockDim.y;
 
-	if(idx < *num_points && idy < *num_points) {
-		distance(&points[idx], &points[idy], &dist);
-		if (dist < 100.f) {
-			points[idx].value++;
+	if(idx < num_points) {
+		for(int i=0; i<idx; i++) {
+			if (distance(&points[idx], &points[i]) < 100.f) {
+				points[idx].value++;
+			}
+		}
+		for(int i=idx+1; i<num_points; i++) {
+			if (distance(&points[idx], &points[i]) < 100.f) {
+				points[idx].value++;
+			}
 		}
 	}
 }
 
-
 /*Wraper function to launch the CUDA kernel to count the close points*/
 void count_close_points_gpu(struct Point* points, int num_points) {
-	int *d_num_points;
 	struct Point* d_points;
 	size_t size = num_points * sizeof(struct Point);
 
 	cudaMalloc((void**) &d_points, size);
-	cudaMalloc((void**) &d_num_points, sizeof(int));
 
 	cudaMemcpy(d_points, points, size, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_num_points, &num_points, sizeof(int), cudaMemcpyHostToDevice);
 
 	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
 
-	count_close_points<<<dimGrid, dimBlock>>>(d_points, d_num_points);
+	count_close_points<<<dimGrid, dimBlock>>>(d_points, num_points);
 
 	cudaMemcpy(points, d_points, size, cudaMemcpyDeviceToHost);
-	cudaFree(d_points); cudaFree(d_num_points);
+	cudaFree(d_points);
 }
 
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
