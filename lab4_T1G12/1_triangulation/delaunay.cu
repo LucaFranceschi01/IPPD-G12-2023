@@ -33,31 +33,30 @@ void print_triangles(struct Triangle * triangles, int num_triangles) {
 }
 
 /* Helper function to calculate the distance between two points */
-__device__ void distance(struct Point * p1, struct Point * p2, double *ret) {
+__device__ double distance(struct Point * p1, struct Point * p2) {
     double dx = (*p1).x - (*p2).x;
     double dy = (*p1).y - (*p2).y;
-    *ret = sqrt(dx*dx + dy*dy);
+    return sqrt(dx*dx + dy*dy);
 }
 
 /* Helper function to check if a triangle is clockwise */
-__host__ void is_ccw(struct Triangle * t, int* ret) {
+__host__ int is_ccw(struct Triangle * t) {
     double ax = (*t).p2.x - (*t).p1.x;
     double ay = (*t).p2.y - (*t).p1.y;
     double bx = (*t).p3.x - (*t).p1.x;
     double by = (*t).p3.y - (*t).p1.y;
 
     double area = ax * by - ay * bx;
-    *ret = area > 0;
+    return area > 0;
 }
 
 /* Helper function to check if a point is inside a circle defined by three points */
-__host__ void inside_circle(struct Point * p, struct Triangle * t, int* ret) {
+__host__ int inside_circle(struct Point * p, struct Triangle * t) {
 //      | ax-dx, ay-dy, (ax-dx)² + (ay-dy)² |
 //det = | bx-dx, by-dy, (bx-dx)² + (by-dy)² |
 //      | cx-dx, cy-dy, (cx-dx)² + (cy-dy)² |
 
-    int clockwise;
-	is_ccw(t, &clockwise);
+    int clockwise = is_ccw(t);
     
     double ax = (*t).p1.x - (*p).x;
     double ay = (*t).p1.y - (*p).y;
@@ -72,10 +71,9 @@ __host__ void inside_circle(struct Point * p, struct Triangle * t, int* ret) {
             (cx*cx + cy*cy) * (ax*by-bx*ay);
     
     if(clockwise) {
-        *ret = det > 0;
-	} else {
-    	*ret = det < 0;
+        return det > 0;
 	}
+    return det < 0;
 }
 
 //* Helper function to compute barycentric coordintaes of a point respect a triangle */
@@ -108,8 +106,8 @@ int inside_triangle(struct Triangle * t, struct Point * p) {
 }
 
 /* Checks if p2 is in a square of size 5 around p1*/
-__host__ void inside_square(struct Point *p1, struct Point *p2, int* ret) {
-	*ret = (abs((p1->x - p2->x)) <= 2.5 && abs((p1->y - p2->y)) <= 2.5);
+__host__ int inside_square(struct Point *p1, struct Point *p2) {
+	return (abs((p1->x - p2->x)) <= 2.5 && abs((p1->y - p2->y)) <= 2.5);
 }
 
 /* Helper function to save an image */   
@@ -174,8 +172,19 @@ void count_close_points_gpu(struct Point* points, int num_points) {
 
 void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-	int inside;
-	for(int i=0; i<num_points-2; i++) {
+
+	int idx = threadIdx.x + blockIdx.x * blockDim.x;
+
+	int i_max = num_points;
+	int j_max = num_points-1;
+	int k_max = num_points-2;
+
+	int i = (idx/(j_max*k_max));
+	int j = (idx/k_max) % (j_max) + 1;
+	int k = idx % (k_max) + 2;
+
+	if (/* condition */)
+	/* for(int i=0; i<num_points-2; i++) {
 		for(int j=i+1; j<num_points-1; j++) {
 			for(int k=j+1; k<num_points; k++) {
 				struct Triangle local;
@@ -185,33 +194,52 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 				local.p3 = points[k];
 				
 				for(int l=0; l<num_points; l++)	{
-					inside_circle(&points[l], &local, &inside);
-					if(inside) {
+					if(inside_circle(&points[l], &local)) {
 						flag = true;
 						break;
 					}
 				}
 
 				if(!flag) {
-					// #pragma acc atomic capture
-					// {
+					// atomicAdd(num_triangles, (*num_triangles)+1);
 					int index = (*num_triangles)++;
-					triangles[index] = local;
+					triangles[*num_triangles] = local;
 					// }
 				}
 			}
 		}
-	}
+	} */
 }
-
 
 /*Wraper function to launch the CUDA kernel to compute delaunay triangulation*/
 void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
-    delaunay_triangulation(points, num_points, triangles, num_triangles);
+    // delaunay_triangulation(points, num_points, triangles, num_triangles);
+	struct Point* d_points;
+	int* d_num_triangles;
+	struct Triangle* d_triangles;
+	int size_points = sizeof(struct Point) * num_points;
+	int size_triangles = sizeof(struct Triangle) * max_num_triangles;
+
+	cudaMalloc((void**) &d_points, size_points);
+	cudaMalloc((void**) &d_triangles, size_triangles);
+	cudaMalloc((void**) &d_num_triangles, sizeof(int));
+
+	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_num_triangles, &num_triangles, sizeof(int), cudaMemcpyHostToDevice);
+
+	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
+	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
+
+    delaunay_triangulation<<<dimGrid, dimBlock>>>(points, num_points, triangles, num_triangles);
+
+	cudaMemcpy(num_triangles, d_num_triangles, sizeof(int), cudaMemcpyDeviceToHost);
+	size_triangles = sizeof(struct Triangle) * *num_triangles;
+	cudaMemcpy(triangles, d_triangles, size_triangles, cudaMemcpyDeviceToHost);
+	
+	cudaFree(d_points); cudaFree(d_triangles); cudaFree(d_num_triangles);
 }
 
 void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
-	int inside;
 	for(int i=0;i<width; i++) {
 		for(int j=0; j<height; j++) {
 			struct Point pixel;
@@ -230,8 +258,7 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 			}
 			
 			for(int k=0; k<num_points; k++) {
-				inside_square(&points[k], &pixel, &inside);
-				if(inside) {
+				if(inside_square(&points[k], &pixel)) {
 					image[pixel(i, j, width)] = 101.f;
 					break;
 				}
@@ -300,6 +327,7 @@ extern "C" int delaunay(int num_points, int width, int height) {
     cudaEventRecord(end);
 	cudaEventSynchronize(end);
     cudaEventElapsedTime(&time, start, end);
+	printf("triangles=%d\n", num_triangles);
     printf("Delaunay triangulation: %f\n", time/1000.f);
 
     printf("Number of generated triangles = %d\n", num_triangles);
