@@ -141,8 +141,10 @@ __global__ void count_close_points(struct Point* points, int *num_points) {
 	double dist;
 
 	int idx = threadIdx.x + blockIdx.x * blockDim.x;
-	for(int j = 0; j<*num_points; j++) {
-		distance(&points[idx], &points[j], &dist);
+	int idy = threadIdx.y + blockIdx.y * blockDim.y;
+
+	if(idx < *num_points && idy < *num_points) {
+		distance(&points[idx], &points[idy], &dist);
 		if (dist < 100.f) {
 			points[idx].value++;
 		}
@@ -164,6 +166,7 @@ void count_close_points_gpu(struct Point* points, int num_points) {
 
 	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
+
 	count_close_points<<<dimGrid, dimBlock>>>(d_points, d_num_points);
 
 	cudaMemcpy(points, d_points, size, cudaMemcpyDeviceToHost);
@@ -281,10 +284,9 @@ extern "C" int delaunay(int num_points, int width, int height) {
     max_num_triangles = num_points*30;
     struct Point * points = (struct Point *) malloc(sizeof(struct Point)*num_points);
     struct Triangle * triangles = (struct Triangle *) malloc(sizeof(struct Triangle)*max_num_triangles);
-    printf("Maximum allowed number of triangles = %d\n", num_points*30);
+    printf("Maximum allowed number of triangles = %d\n", max_num_triangles);
     
     init_points(points, num_points, width, height);
-    printf("Points initialized\n");
 
     cudaEventRecord(start);
     count_close_points_gpu(points, num_points);
