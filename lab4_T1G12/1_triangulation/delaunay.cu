@@ -40,7 +40,7 @@ __device__ double distance(struct Point * p1, struct Point * p2) {
 }
 
 /* Helper function to check if a triangle is clockwise */
-__host__ int is_ccw(struct Triangle * t) {
+__device__ int is_ccw(struct Triangle * t) {
     double ax = (*t).p2.x - (*t).p1.x;
     double ay = (*t).p2.y - (*t).p1.y;
     double bx = (*t).p3.x - (*t).p1.x;
@@ -51,7 +51,7 @@ __host__ int is_ccw(struct Triangle * t) {
 }
 
 /* Helper function to check if a point is inside a circle defined by three points */
-__host__ int inside_circle(struct Point * p, struct Triangle * t) {
+__device__ int inside_circle(struct Point * p, struct Triangle * t) {
 //      | ax-dx, ay-dy, (ax-dx)² + (ay-dy)² |
 //det = | bx-dx, by-dy, (bx-dx)² + (by-dy)² |
 //      | cx-dx, cy-dy, (cx-dx)² + (cy-dy)² |
@@ -136,7 +136,7 @@ void init_points(struct Point* points, int num_points, int width, int height) {
 }
 
 __global__ void count_close_points(struct Point* points, int num_points) {
-	int idx = threadIdx.x + blockIdx.x * blockDim.x;
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(idx < num_points) {
 		for(int i=0; i<idx; i++) {
@@ -170,10 +170,9 @@ void count_close_points_gpu(struct Point* points, int num_points) {
 	cudaFree(d_points);
 }
 
-void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
+__global__ void delaunay_triangulation(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
 	/* Iterate over every possible triangle defined by three points */
-
-	int idx = threadIdx.x + blockIdx.x * blockDim.x;
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
 	int i_max = num_points;
 	int j_max = num_points-1;
@@ -183,40 +182,35 @@ void delaunay_triangulation(struct Point* points, int num_points, struct Triangl
 	int j = (idx/k_max) % (j_max) + 1;
 	int k = idx % (k_max) + 2;
 
-	if (/* condition */)
-	/* for(int i=0; i<num_points-2; i++) {
-		for(int j=i+1; j<num_points-1; j++) {
-			for(int k=j+1; k<num_points; k++) {
-				struct Triangle local;
-				bool flag = false;
-				local.p1 = points[i];
-				local.p2 = points[j];
-				local.p3 = points[k];
-				
-				for(int l=0; l<num_points; l++)	{
-					if(inside_circle(&points[l], &local)) {
-						flag = true;
-						break;
-					}
-				}
-
-				if(!flag) {
-					// atomicAdd(num_triangles, (*num_triangles)+1);
-					int index = (*num_triangles)++;
-					triangles[*num_triangles] = local;
-					// }
-				}
+	if (i<i_max && j<j_max && k<k_max) {
+		struct Triangle local;
+		bool flag = false;
+		local.p1 = points[i];
+		local.p2 = points[j];
+		local.p3 = points[k];
+		
+		for(int l=0; l<num_points; l++)	{
+			if(inside_circle(&points[l], &local)) {
+				flag = true;
+				break;
 			}
 		}
-	} */
+
+		atomicAdd(num_triangles, 1); // 1022 ???
+		if(!flag) { // no entra aqui nunca
+			// (*num_triangles)++;
+			triangles[*num_triangles] = local;
+		}
+	}
 }
 
 /*Wraper function to launch the CUDA kernel to compute delaunay triangulation*/
 void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
     // delaunay_triangulation(points, num_points, triangles, num_triangles);
 	struct Point* d_points;
-	int* d_num_triangles;
 	struct Triangle* d_triangles;
+	int* d_num_triangles;
+
 	int size_points = sizeof(struct Point) * num_points;
 	int size_triangles = sizeof(struct Triangle) * max_num_triangles;
 
@@ -225,12 +219,12 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 	cudaMalloc((void**) &d_num_triangles, sizeof(int));
 
 	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
-	cudaMemcpy(d_num_triangles, &num_triangles, sizeof(int), cudaMemcpyHostToDevice);
+	cudaMemcpy(d_num_triangles, num_triangles, sizeof(int), cudaMemcpyHostToDevice);
 
 	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
 
-    delaunay_triangulation<<<dimGrid, dimBlock>>>(points, num_points, triangles, num_triangles);
+    delaunay_triangulation<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, d_num_triangles);
 
 	cudaMemcpy(num_triangles, d_num_triangles, sizeof(int), cudaMemcpyDeviceToHost);
 	size_triangles = sizeof(struct Triangle) * *num_triangles;
@@ -327,7 +321,6 @@ extern "C" int delaunay(int num_points, int width, int height) {
     cudaEventRecord(end);
 	cudaEventSynchronize(end);
     cudaEventElapsedTime(&time, start, end);
-	printf("triangles=%d\n", num_triangles);
     printf("Delaunay triangulation: %f\n", time/1000.f);
 
     printf("Number of generated triangles = %d\n", num_triangles);
