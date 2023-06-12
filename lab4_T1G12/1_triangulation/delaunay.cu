@@ -236,6 +236,51 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 	cudaFree(d_points); cudaFree(d_triangles); cudaFree(d_num_triangles);
 }
 
+__global__ void save_empties_triangles(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	int i = idx % width; // cols (x)
+	int j = idx / width; // rows (y)
+
+	if(i < width && j<height) {
+		struct Point pixel;
+		double alpha, beta, gamma;
+
+		pixel.x = i;
+		pixel.y = j;
+		image[pixel(i, j, width)] = -1.0;
+
+		for(int k=0; k<num_triangles; k++) {
+			barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+			if (alpha > 0 && beta > 0 && gamma > 0) {
+				image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+				break;
+			}
+		}
+	}
+}
+
+__global__ void save_sensors(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	int i = idx % width; // cols (x)
+	int j = idx / width; // rows (y)
+
+	if(i < width && j<height) {
+		struct Point pixel;
+		pixel.x = i;
+		pixel.y = j;
+
+		for(int k=0; k<num_points; k++) {
+			if(inside_square(&points[k], &pixel)) {
+				image[pixel(i, j, width)] = 101.0;
+				break;
+			}
+		}
+	}
+}
+
+
 __global__ void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -290,9 +335,11 @@ void save_triangulation_image_gpu(struct Point* points, int num_points, struct T
 	int dimGrid = (pixels + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
 	
-	save_triangulation_image<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
-
+	save_empties_triangles<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
 	cudaDeviceSynchronize();
+	save_sensors<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
+	cudaDeviceSynchronize();
+
 
 	cudaMemcpy(image, d_image, pixels * sizeof(double), cudaMemcpyDeviceToHost);
 
