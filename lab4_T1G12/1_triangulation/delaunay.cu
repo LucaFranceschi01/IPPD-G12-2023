@@ -77,7 +77,7 @@ __device__ int inside_circle(struct Point * p, struct Triangle * t) {
 }
 
 //* Helper function to compute barycentric coordintaes of a point respect a triangle */
-void barycentric_coordinates(struct Triangle * t, struct Point * p, double * alpha, double * beta, double * gamma) {
+__device__ void barycentric_coordinates(struct Triangle * t, struct Point * p, double * alpha, double * beta, double * gamma) {
     // Compute the barycentric coordinates of the point with respect to the triangle
     (*alpha) = (((*t).p2.y - (*t).p3.y) * ((*p).x - (*t).p3.x) + ((*t).p3.x - (*t).p2.x) * ((*p).y - (*t).p3.y)) /
                   (((*t).p2.y - (*t).p3.y) * ((*t).p1.x - (*t).p3.x) + ((*t).p3.x - (*t).p2.x) * ((*t).p1.y - (*t).p3.y));
@@ -94,7 +94,7 @@ void barycentric_coordinates(struct Triangle * t, struct Point * p, double * alp
 
 
 /* Helper function to check if a point is inside a triangle (IT CAN BE REMOVED)*/
-int inside_triangle(struct Triangle * t, struct Point * p) {
+__device__ int inside_triangle(struct Triangle * t, struct Point * p) {
     double alpha, beta, gamma;
     barycentric_coordinates(t, p, &alpha, &beta, &gamma); 
     // Check if the barycentric coordinates are positive and add up to 1
@@ -106,7 +106,7 @@ int inside_triangle(struct Triangle * t, struct Point * p) {
 }
 
 /* Checks if p2 is in a square of size 5 around p1*/
-__host__ int inside_square(struct Point *p1, struct Point *p2) {
+__device__ int inside_square(struct Point *p1, struct Point *p2) {
 	return (abs((p1->x - p2->x)) <= 2.5 && abs((p1->y - p2->y)) <= 2.5);
 }
 
@@ -236,30 +236,31 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 	cudaFree(d_points); cudaFree(d_triangles); cudaFree(d_num_triangles);
 }
 
-void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
-	for(int i=0;i<width; i++) {
-		for(int j=0; j<height; j++) {
-			struct Point pixel;
-			double alpha, beta, gamma;
+__global__ void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	int i = idx / width;
+	int j = idx % width;
 
-			pixel.x = i;
-			pixel.y = j;
-			image[pixel(i, j, width)] = -1.0;
+	struct Point pixel;
+	double alpha, beta, gamma;
 
-			for(int k=0; k<num_triangles; k++) {
-				barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
-				if (alpha > 0 && beta > 0 && gamma > 0) {
-					image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
-					break;
-				}
-			}
-			
-			for(int k=0; k<num_points; k++) {
-				if(inside_square(&points[k], &pixel)) {
-					image[pixel(i, j, width)] = 101.f;
-					break;
-				}
-			}
+	pixel.x = i;
+	pixel.y = j;
+	image[pixel(i, j, width)] = -1.0;
+
+	for(int k=0; k<num_triangles; k++) {
+		barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+		if (alpha > 0 && beta > 0 && gamma > 0) {
+			image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+			break;
+		}
+	}
+	
+	for(int k=0; k<num_points; k++) {
+		if(inside_square(&points[k], &pixel)) {
+			image[pixel(i, j, width)] = 101.f;
+			break;
 		}
 	}
 }
@@ -268,15 +269,35 @@ void save_triangulation_image(struct Point* points, int num_points, struct Trian
 Remember to store an image of int's between 0 and 100, where points store 101, and empty areas -1, and points inside triangle the average of value */
 void save_triangulation_image_gpu(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
     //create structures
-    double* image = (double *) malloc(sizeof(double)*width*height); 
-	save_triangulation_image(points, num_points, triangles, num_triangles, width, height, image);
+	int pixels = width * height;
+    double* image = (double *) malloc(sizeof(double)*pixels);
+	double *d_image;
+	struct Point* d_points;
+	struct Triangle* d_triangles;
 
+	int size_points = sizeof(struct Point) * num_points;
+	int size_triangles = sizeof(struct Triangle) * max_num_triangles;
+
+	cudaMalloc((void**) &d_points, size_points);
+	cudaMalloc((void**) &d_triangles, size_triangles);
+	cudaMalloc((void**) &d_image, sizeof(double)*pixels);
+
+	int dimGrid = (pixels + (TPB-1)) / TPB; // amount of blocks of size TPB
+	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
+	
+	save_triangulation_image<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
+
+	cudaDeviceSynchronize();
+
+	cudaMemcpy(image, d_image, pixels * sizeof(double), cudaMemcpyDeviceToHost);
+
+	cudaFree(d_points); cudaFree(d_triangles); cudaFree(d_image);
+	
     //write image
     save_image("image.txt", width, height, image);
 
     //free structures
     free(image);
-    
 }
 
 void printCudaInfo() {
