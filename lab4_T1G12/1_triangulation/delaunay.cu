@@ -166,6 +166,8 @@ void count_close_points_gpu(struct Point* points, int num_points) {
 
 	count_close_points<<<dimGrid, dimBlock>>>(d_points, num_points);
 
+	cudaDeviceSynchronize();
+
 	cudaMemcpy(points, d_points, size, cudaMemcpyDeviceToHost);
 	cudaFree(d_points);
 }
@@ -182,23 +184,22 @@ __global__ void delaunay_triangulation(struct Point* points, int num_points, str
 	int j = (idx/k_max) % (j_max) + 1;
 	int k = idx % (k_max) + 2;
 
-	if (i<i_max && j<j_max && k<k_max) {
+	if (i<i_max && j<j_max+1 && k<k_max+2 && i<j && j<k) {
+		int flag = 0;
 		struct Triangle local;
-		bool flag = false;
 		local.p1 = points[i];
 		local.p2 = points[j];
 		local.p3 = points[k];
 		
 		for(int l=0; l<num_points; l++)	{
 			if(inside_circle(&points[l], &local)) {
-				flag = true;
+				flag = 1;
 				break;
 			}
 		}
 
-		atomicAdd(num_triangles, 1); // 1022 ???
-		if(!flag) { // no entra aqui nunca
-			// (*num_triangles)++;
+		if(flag == 0) {
+			atomicAdd(num_triangles, 1);
 			triangles[*num_triangles] = local;
 		}
 	}
@@ -206,7 +207,6 @@ __global__ void delaunay_triangulation(struct Point* points, int num_points, str
 
 /*Wraper function to launch the CUDA kernel to compute delaunay triangulation*/
 void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Triangle* triangles, int* num_triangles) {
-    // delaunay_triangulation(points, num_points, triangles, num_triangles);
 	struct Point* d_points;
 	struct Triangle* d_triangles;
 	int* d_num_triangles;
@@ -221,10 +221,13 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
 	cudaMemcpy(d_num_triangles, num_triangles, sizeof(int), cudaMemcpyHostToDevice);
 
-	int dimGrid = (num_points + (TPB-1)) / TPB; // amount of blocks of size TPB
+	int collapsed_points = num_points * (num_points - 1) * (num_points - 2);
+	int dimGrid = (collapsed_points + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512
 
     delaunay_triangulation<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, d_num_triangles);
+
+	cudaDeviceSynchronize();
 
 	cudaMemcpy(num_triangles, d_num_triangles, sizeof(int), cudaMemcpyDeviceToHost);
 	size_triangles = sizeof(struct Triangle) * *num_triangles;
