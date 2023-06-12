@@ -4,7 +4,7 @@
 #include <cuda.h>
 
 #define pixel(i, j, w)  (((j)*(w)) +(i))
-#define TPB 128 // THREADS PER BLOCK needs testing
+#define TPB 128 // THREADS PER BLOCK
 
 int max_num_triangles;
 
@@ -239,28 +239,30 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 __global__ void save_triangulation_image(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
-	int i = idx / width;
-	int j = idx % width;
+	int i = idx % width; // cols (x)
+	int j = idx / width; // rows (y)
 
-	struct Point pixel;
-	double alpha, beta, gamma;
+	if(i < width && j<height) {
+		struct Point pixel;
+		double alpha, beta, gamma;
 
-	pixel.x = i;
-	pixel.y = j;
-	image[pixel(i, j, width)] = -1.0;
+		pixel.x = i;
+		pixel.y = j;
+		image[pixel(i, j, width)] = -1.0;
 
-	for(int k=0; k<num_triangles; k++) {
-		barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
-		if (alpha > 0 && beta > 0 && gamma > 0) {
-			image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
-			break;
+		for(int k=0; k<num_triangles; k++) {
+			barycentric_coordinates(&triangles[k], &pixel, &alpha, &beta, &gamma);
+			if (alpha > 0 && beta > 0 && gamma > 0) {
+				image[pixel(i, j, width)] = alpha*(triangles[k].p1.value) + beta*(triangles[k].p2.value) + gamma*(triangles[k].p3.value);
+				break;
+			}
 		}
-	}
-	
-	for(int k=0; k<num_points; k++) {
-		if(inside_square(&points[k], &pixel)) {
-			image[pixel(i, j, width)] = 101.f;
-			break;
+		
+		for(int k=0; k<num_points; k++) {
+			if(inside_square(&points[k], &pixel)) {
+				image[pixel(i, j, width)] = 101.0;
+				break;
+			}
 		}
 	}
 }
@@ -281,6 +283,9 @@ void save_triangulation_image_gpu(struct Point* points, int num_points, struct T
 	cudaMalloc((void**) &d_points, size_points);
 	cudaMalloc((void**) &d_triangles, size_triangles);
 	cudaMalloc((void**) &d_image, sizeof(double)*pixels);
+
+	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_triangles, triangles, size_triangles, cudaMemcpyHostToDevice);
 
 	int dimGrid = (pixels + (TPB-1)) / TPB; // amount of blocks of size TPB
 	int dimBlock = TPB; // int multiple of 32 (warp size) (1024 maximum) try values 128-512

@@ -7,7 +7,7 @@ Max threads per block: 1024
 ------------------------------------------------------------------
 
 Maximum allowed number of triangles = 30720
-Counting close points: 0.002443
-Delaunay triangulation: 0.424066
+Counting close points: 0.002355
+Delaunay triangulation: 0.421929
 Number of generated triangles = 2030
-Generate image: 0.827434
+Generate image: 0.756835
