@@ -238,7 +238,7 @@ void delaunay_triangulation_gpu(struct Point* points, int num_points, struct Tri
 	cudaFree(d_points); cudaFree(d_triangles); cudaFree(d_num_triangles);
 }
 
-__global__ void save_empties_triangles(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
+__global__ void save_empties_triangles(struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	int i = idx % width; // cols (x)
@@ -262,7 +262,7 @@ __global__ void save_empties_triangles(struct Point* points, int num_points, str
 	}
 }
 
-__global__ void save_sensors(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height, double* image) {
+__global__ void save_sensors(struct Point* points, int num_points, int width, double* image) {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(idx < num_points) {
@@ -311,34 +311,32 @@ Remember to store an image of int's between 0 and 100, where points store 101, a
 void save_triangulation_image_gpu(struct Point* points, int num_points, struct Triangle* triangles, int num_triangles, int width, int height) {
     //create structures
 	int pixels = width * height;
-    // double* image = (double *) malloc(sizeof(double)*pixels);
-	
-	// save_triangulation_image(points, num_points, triangles, num_triangles, width, height, image);
-
     double* image = (double *) malloc(sizeof(double)*pixels);
-	double *d_image;
+
 	struct Point* d_points;
 	struct Triangle* d_triangles;
 
 	int size_points = sizeof(struct Point) * num_points;
 	int size_triangles = sizeof(struct Triangle) * max_num_triangles;
 
-	cudaMalloc((void**) &d_points, size_points);
-	cudaMalloc((void**) &d_triangles, size_triangles);
+	double *d_image;
 	cudaMalloc((void**) &d_image, sizeof(double)*pixels);
 
-	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
+	cudaMalloc((void**) &d_triangles, size_triangles);
 	cudaMemcpy(d_triangles, triangles, size_triangles, cudaMemcpyHostToDevice);
 
 	int dimGrid = (pixels + (TPB-1)) / TPB;
 	int dimBlock = TPB;
 	printf("\tLaunching kernel <<<%d, %d>>>\n", dimGrid, dimBlock);
-	save_empties_triangles<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
+	save_empties_triangles<<<dimGrid, dimBlock>>>(d_triangles, num_triangles, width, height, d_image);
+	
+	cudaMalloc((void**) &d_points, size_points);
+	cudaMemcpy(d_points, points, size_points, cudaMemcpyHostToDevice);
 	// cudaDeviceSynchronize();
 
 	dimGrid = (num_points + (TPB-1)) / TPB;
 	printf("\tLaunching kernel <<<%d, %d>>>\n", dimGrid, dimBlock);
-	save_sensors<<<dimGrid, dimBlock>>>(d_points, num_points, d_triangles, num_triangles, width, height, d_image);
+	save_sensors<<<dimGrid, dimBlock>>>(d_points, num_points, width, d_image);
 	cudaDeviceSynchronize();
 
 	cudaMemcpy(image, d_image, pixels * sizeof(double), cudaMemcpyDeviceToHost);
